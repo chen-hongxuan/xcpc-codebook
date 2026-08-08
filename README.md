@@ -24,13 +24,9 @@
 
 ## 本地构建
 
-安装 Typst 0.15.1 或更新版本，并安装 `Noto Serif CJK SC` 中文字体，然后运行：
-
-```sh
-typst compile --root . main.typ dist/xcpc-codebook.pdf
-```
-
-如果中文字体放在仓库的 `fonts/` 目录，改用：
+安装 Typst 0.15.1 或更新版本。仓库中的 Maple Mono 通过 `--font-path fonts`
+加载；正文中文字体需要安装 `Noto Serif CJK SC`，或把相应字体文件放入
+`fonts/`。然后运行：
 
 ```sh
 typst compile --root . --font-path fonts main.typ dist/xcpc-codebook.pdf

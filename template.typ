@@ -1,10 +1,10 @@
 #let code-line(it, highlights: ()) = {
   let number = box(
-    width: 2.2em,
-    align(right, text(size: 5pt, fill: luma(145), str(it.number))),
+    width: 2.5em,
+    align(right, text(size: 7pt, fill: luma(135), str(it.number))),
   )
-  let separator = box(width: 0.35pt, height: 0.78em, fill: luma(190))
-  let body = [#number#h(0.35em)#separator#h(0.55em)#it.body]
+  let separator = box(width: 0.4pt, height: 0.85em, fill: luma(185))
+  let body = [#number#h(0.5em)#separator#h(0.75em)#it.body]
 
   if highlights.contains(it.number) {
     box(width: 100%, fill: rgb("e9fbfb"), body)
@@ -22,9 +22,10 @@
   width: 100%,
   breakable: true,
   stroke: 0.35pt + luma(145),
-  inset: 3pt,
-  above: 1pt,
-  below: 3pt,
+  inset: 7pt,
+  above: 5pt,
+  below: 8pt,
+  radius: 2pt,
   body,
 )
 
@@ -43,28 +44,28 @@
       (name: "Libertinus Serif", covers: "latin-in-cjk"),
       "Noto Serif CJK SC",
     ),
-    size: 7.2pt,
+    size: 10pt,
     lang: "zh",
   )
-  set par(justify: false, leading: 0.16em, spacing: 1.2pt)
-  set columns(gutter: 4.5mm)
+  set par(justify: true, leading: 0.5em, spacing: 4pt)
   set heading(numbering: "1.1")
   set raw(tab-size: 2)
 
-  show heading.where(level: 1): set text(size: 15pt, weight: "bold")
-  show heading.where(level: 2): set text(size: 9.2pt, weight: "bold")
-  show heading.where(level: 3): set text(size: 7.4pt, weight: "bold")
+  show heading.where(level: 1): set text(size: 20pt, weight: "bold")
+  show heading.where(level: 2): set text(size: 14pt, weight: "bold")
+  show heading.where(level: 3): set text(size: 11.2pt, weight: "bold")
   show raw: set text(
-    font: "DejaVu Sans Mono",
-    size: 6.15pt,
+    font: "Maple Mono NF",
+    size: 8.5pt,
   )
   show raw.where(block: true): block.with(
     width: 100%,
     breakable: true,
     stroke: 0.35pt + luma(145),
-    inset: (x: 2pt, y: 1.4pt),
-    above: 1pt,
-    below: 3pt,
+    inset: (x: 6pt, y: 4pt),
+    above: 5pt,
+    below: 9pt,
+    radius: 2pt,
   )
   show raw.line: it => code-line(it)
 
@@ -72,7 +73,7 @@
     stack(
       spacing: 1pt,
       [
-        #set text(size: 6.3pt, fill: luma(45))
+        #set text(size: 8.3pt, fill: luma(45))
         #school
         #h(1fr)
         #short-title
@@ -85,9 +86,9 @@
 
   set page(
     paper: "a4",
-    margin: (left: 8mm, right: 8mm, top: 12mm, bottom: 7mm),
-    columns: 2,
-    header-ascent: 25%,
+    margin: (left: 18mm, right: 18mm, top: 17mm, bottom: 15mm),
+    columns: 1,
+    header-ascent: 35%,
     header: running-header,
   )
 
@@ -128,13 +129,13 @@
   counter(page).update(1)
   page(
     paper: "a4",
-    margin: (left: 10mm, right: 10mm, top: 11mm, bottom: 8mm),
-    columns: 2,
+    margin: (left: 18mm, right: 18mm, top: 17mm, bottom: 15mm),
+    columns: 1,
     header: none,
     footer: none,
   )[
-    #set text(size: 6.4pt)
-    #set par(leading: 0.12em)
+    #set text(size: 9.5pt)
+    #set par(leading: 0.4em)
     #heading(level: 1, numbering: none, outlined: false)[目录 / Contents]
     #outline(title: none, depth: 3, indent: 1em)
   ]

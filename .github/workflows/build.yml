@@ -28,7 +28,7 @@ jobs:
       - name: Compile PDF
         run: |
           mkdir -p dist
-          typst compile --root . main.typ dist/xcpc-codebook.pdf
+          typst compile --root . --font-path fonts main.typ dist/xcpc-codebook.pdf
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v7
