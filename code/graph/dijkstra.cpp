@@ -1,27 +1,24 @@
-using P = pair<long long, int>;
-const long long INF = numeric_limits<long long>::max() / 4;
-
-vector<long long> dijkstra(
-    int source,
-    const vector<vector<pair<int, int>>>& graph
-) {
-    int n = (int) graph.size();
-    vector<long long> dist(n, INF);
-    priority_queue<P, vector<P>, greater<P>> pq;
-
-    dist[source] = 0;
-    pq.emplace(0, source);
-    while (!pq.empty()) {
-        auto [du, u] = pq.top();
-        pq.pop();
-        if (du != dist[u]) continue;
-
-        for (auto [v, weight] : graph[u]) {
-            if (dist[v] > du + weight) {
-                dist[v] = du + weight;
-                pq.emplace(dist[v], v);
+struct Dijkstra{
+    void work(int n,VI &s,vector<vector<array<int,2>>> &edge,VI &dis){
+        priority_queue<array<int,2>> q;
+        dis.assign(n+5,inf);
+        vector<int> vis(n+5,0);
+        for(int x:s){
+            dis[x]=0;
+            q.push({0,x});
+        }
+        while(q.size()){
+            int u=q.top()[1];
+            q.pop();
+            if(vis[u]){
+                continue;
+            }
+            for(auto [v,w]:edge[u]){
+                if(dis[v]>dis[u]+w){
+                    dis[v]=dis[u]+w;
+                    q.push({-dis[v],v});
+                }
             }
         }
     }
-    return dist;
 }

@@ -1,11 +1,11 @@
 #import "template.typ": codebook, code-file, note-box
 
 #show: codebook.with(
-  title: "我的 XCPC 代码模板库",
+  title: "chx@xjtu's XCPC codebook",
   short-title: "XCPC Codebook",
-  school: "你的学校 / Your University",
-  team: "你的队名 / Your Team",
-  members: ("队员 A", "队员 B", "队员 C"),
+  school: "Xi'an Jiaotong University",
+  team: "King of Kirin",
+  members: ("chx*", "wjr", "jyc"),
 )
 
 = 基础 / Basic

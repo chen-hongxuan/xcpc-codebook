@@ -1,30 +1,39 @@
 #include <bits/stdc++.h>
+
+#define int long long
+#define VI vector<int>
+
 using namespace std;
 
-using i64 = long long;
-using u64 = unsigned long long;
-using i128 = __int128_t;
+inline int read(){
+    int x=0,f=1;char ch=getchar();
+    for(;!isdigit(ch);ch=getchar())f^=ch=='-';
+    for(;isdigit(ch);ch=getchar())x=x*10+(ch^48);
+    return f?x:-x;
+}
+template<typename T>inline void chmin(T &x,T y){x>y?x=y:y;}
+template<typename T>inline void chmax(T &x,T y){x<y?x=y:y;}
 
-template<class T>
-bool chmin(T& a, const T& b) {
-    return b < a ? a = b, true : false;
+const int mo=998244353,inf=1e15;
+
+mt19937 rnd(time(0));
+
+inline void red(int &x){(x>=mo)&&(x-=mo);}
+inline int qpow(int x,int t=mo-2){
+    int ret=1;
+    for(;t;t>>=1,x=x*x%mo)if(t&1)ret=ret*x%mo;
+    return ret;
 }
 
-template<class T>
-bool chmax(T& a, const T& b) {
-    return a < b ? a = b, true : false;
+void solve(){
+
+    return;
 }
 
-void solve() {
-    // Write the per-test-case solution here.
-}
+signed main(){
+    for(int cas=read();cas--;){
+        solve();
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int tests = 1;
-    // cin >> tests;
-    while (tests--) solve();
+    }
     return 0;
 }
