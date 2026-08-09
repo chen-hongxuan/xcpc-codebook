@@ -1,30 +1,3 @@
-#include <bits/stdc++.h>
-
-#define int long long
-#define ar(u,n) array<u,n>
-
-using namespace std;
-
-inline int read(){
-    int x=0,f=1;char ch=getchar();
-    for(;!isdigit(ch);ch=getchar())f^=ch=='-';
-    for(;isdigit(ch);ch=getchar())x=x*10+(ch^48);
-    return f?x:-x;
-}
-template<typename T>inline void chmin(T &x,T y){x>y?x=y:y;}
-template<typename T>inline void chmax(T &x,T y){x<y?x=y:y;}
-
-const int mo=998244353,inf=1e15;
-
-mt19937 rnd(time(0));
-
-inline void red(int &x){(x>=mo)&&(x-=mo);}
-inline int qpow(int x,int t=mo-2){
-    int ret=1;
-    for(;t;t>>=1,x=x*x%mo)if(t&1)ret=ret*x%mo;
-    return ret;
-}
-
 struct cmplx{
     double Re,Im;
     cmplx(double x=0,double y=0):Re(x),Im(y){}
@@ -41,22 +14,24 @@ struct cmplx{
         return cmplx(Re,-Im);
     }
 };
-
-struct polynomial{
-    
-};
-
-void solve(){
-
-    return;
-}
-
-
-
-signed main(){
-    for(int cas=read();cas--;){
-        solve();
-
-    }
-    return 0;
+void fft(vector<cmplx> &f,int tag){//0:DFT 1:IDFT
+	for(int i=1,j=f.size()>>1,k;i<f.size();++i,j+=k){
+		if(i<j)swap(f[i],f[j]);
+		for(k=f.size()>>1;j>=k&&k;k>>=1)j-=k;
+	}
+	for(int l=2;l<=f.size();l<<=1){
+		cmplx w(cos(pi*2/l),sin(pi*2/l));
+		if(!tag)w=w.conj();
+		for(int i=0;i<f.size();i+=l){
+			cmplx s(1,0);
+			for(int j=i;j<i+l/2;++j,s=s*w){
+				f[j+l/2]=f[j]-s*f[j+l/2];
+				f[j]=f[j]+f[j]-f[j+l/2];
+			}
+		}
+	}
+	if(tag)for(auto &x:f){
+		x.Re/=f.size();
+		x.Im/=f.size();
+	}
 }

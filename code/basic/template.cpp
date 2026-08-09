@@ -15,6 +15,7 @@ template<typename T>inline void chmin(T &x,T y){x>y?x=y:y;}
 template<typename T>inline void chmax(T &x,T y){x<y?x=y:y;}
 
 const int mo=998244353,inf=1e15;
+const double pi=acos(-1);
 
 mt19937 rnd(time(0));
 
