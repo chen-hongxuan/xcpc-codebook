@@ -25,7 +25,7 @@ struct poly{
         return ret;
     }
     VI f;
-    poly(int len=0):f(VI(len,0)){}
+    poly(int len=0,int val=0):f(VI(len,val)){}
     void fft(int opt){//0<-DFT 1<-IDFT
         for(int i=1,j=f.size()>>1,k;i<f.size();++i,j+=k){
 			if(i<j)swap(f[i],f[j]);
@@ -35,9 +35,10 @@ struct poly{
             int wn=qpow(gn,(mo-1)/(k<<1));
             if(opt)wn=qpow(wn);
             for(int i=0;i<f.size();i+=(k<<1)){
-                for(int j=0,w=1;j<i+k;++j,w=w*wn%mo){
-                    red(f[i+j]+=w*f[i+j+k]%mo);
-                    red(f[i+j+k]+=mo-w*f[i+j+k]*2%mo);
+                for(int j=i,w=1;j<i+k;++j,w=w*wn%mo){
+                    int u=f[j],v=w*f[j+k]%mo;
+                    red(f[j]=u+v);
+                    red(f[j+k]=u+mo-v);
                 }
             }
         }
@@ -47,10 +48,11 @@ struct poly{
         }
     }
     int size(){return f.size();}
-    void extend(int siz){
+    void reduct(int siz){f.resize(siz,0);}
+    void bas2_extend(int siz){
         int len=1;
-        while(len<=siz)len<<=1;
-        f.resize(len,0);
+        while(len<siz)len<<=1;
+        reduct(len);
     }
     int &operator[](size_t x){return f[x];}
     poly operator+(poly &t){
@@ -71,28 +73,59 @@ struct poly{
     }
     poly operator*(poly t){
         poly s=*this;
-        int len=t.size()+size();
-        s.extend(len);
-        t.extend(len);
+        int len=t.size()+size()-1;
+        s.bas2_extend(len);
+        t.bas2_extend(len);
         s.fft(0),t.fft(0);
         for(int i=0;i<s.size();++i){
             s[i]=s[i]*t[i]%mo;
         }
         s.fft(1);
+        s.reduct(len);
         return s;
     }
-
-};
-int n,m;
-void solve(){
-    n=read(),m=read();
-    poly f(n+1),g(m+1);
-    for(int i=0;i<=n;++i)f[i]=read();
-    for(int i=0;i<=m;++i)g[i]=read();
-    poly ret=f*g;
-    for(int i=0;i<=n+m;++i){
-        printf("%lld ",ret[i]);
+    poly inverse(){
+        poly ret(1,qpow(f[0]));
+        for(int len=2;len<(size()<<1);len<<=1){
+            poly tmp(min(len,size()));
+            for(int i=0;i<tmp.size();++i){
+                tmp[i]=f[i];
+            }
+            tmp=tmp*ret;
+            tmp.reduct(len);
+            for(int i=0;i<len;++i){
+                tmp[i]=(mo-tmp[i])%mo;
+            }
+            red(tmp[0]+=2);
+            ret=ret*tmp;
+            ret.reduct(len);
+        }
+        ret.reduct(size());
+        return ret;
     }
+    poly derivate(){
+        poly s(size()-1);
+        for(int i=0;i+1<size();++i){
+            s[i]=f[i+1]*(i+1)%mo;
+        }
+        return s;
+    }
+    poly integral(){
+        poly s(size()+1);
+        for(int i=1;i<=size();++i){
+            s[i]=f[i]*
+        }
+    }
+};
+
+
+int n;
+void solve(){
+    n=read();
+    poly f(n);
+    for(int &i:f.f)i=read();
+    poly g=f.inverse();
+    for(int i:g.f)printf("%lld ",i);
     return;
 }
 

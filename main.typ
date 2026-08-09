@@ -32,6 +32,10 @@ Complexity: $O((V + E) log V)$ with a binary heap.
 
 #code-file("code/graph/dijkstra.cpp")
 
+== Dinic
+
+#code-file("code/graph/dinic.cpp")
+
 = 数学 / Math
 
 == Extended Euclidean algorithm
@@ -39,6 +43,10 @@ Complexity: $O((V + E) log V)$ with a binary heap.
 For $a x + b y = gcd(a, b)$, the function below returns $(g, x, y)$.
 
 #code-file("code/math/exgcd.cpp")
+
+== 多项式全家桶
+
+#code-file("code/math/poly(mod).cpp")
 
 = 检查表 / Checklist
 
