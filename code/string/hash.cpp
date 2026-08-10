@@ -1,37 +1,45 @@
-#include <bits/stdc++.h>
-#define int long long
-
-#define VI vector<int>
-using namespace std;
-inline int read(){
-	int x=0,f=1;char ch=getchar();
-	for(;!isdigit(ch);ch=getchar())f^=ch=='-';
-	for(;isdigit(ch);ch=getchar())x=x*10+(ch^48);
-	return f?x:-x;
-}
-
-const int inf=1e18;
-
-inline void chmin(int &x,int y){
-	x=min(x,y);
-}
-
-const int _P1_=10,_P2_=100,_P3_=1000;
-const int _Q1_=10,_Q2_=100,_Q3_=1000;
-
 struct HASH{
-    static constexpr array<int,3> mo={_P1_,_P2_,_P3_};
-    static constexpr array<int,3> gn={_Q1_,_Q2_,_Q3_};
-    array<int,3> f;
-    HASH(int a=0,int b=0,int c=0):f({a,b,c}){}
-    inline void red(int &x,int y){(x>=y)&&(x-=y);}
-    inline void red(array<int,3> &x){
-        red(x[0],mo[0]),red(x[1],mo[1]),red(x[2],mo[2]);
+    using ll=long long;
+    inline static constexpr array<ll,3> MOD{_P1_,_P2_,_P3_};
+    array<ll,3> value{};
+    static ll norm(ll x,ll mod){x%=mod;return x<0?x+mod:x;}
+    HASH(ll x=0):value({x,x,x}){}
+    HASH(ll x,ll y,ll z):value({x,y,z}){}
+    ll& operator[](int i){return value[i];}
+    const ll& operator[](int i)const{return value[i];}
+    HASH& operator+=(const HASH& x){
+        for(int i=0;i<3;++i){
+            if((value[i]+=x[i])>=MOD[i]){
+                value[i]-=MOD[i];
+            }
+        }
+        return *this;
     }
-    array<int,3> add(array<int,3> x,array<int,3> &y){
-        x[0]+=y[0],x[1]+=y[1],x[2]+=y[2];
-        red(x);
-        return x;
+    HASH& operator-=(const HASH& x){
+        for(int i=0;i<3;++i){
+            if((value[i]-=x[i])<0){
+                value[i]+=MOD[i];
+            }
+        }
+        return *this;
     }
-    array<int,3> mul()
+    HASH& operator*=(const HASH& x){
+        for(int i=0;i<3;++i){
+            value[i]=value[i]*x[i]%MOD[i];
+        }
+        return *this;
+    }
+    friend bool operator==(const HASH& x,const HASH& y){
+        return x.value==y.value;
+    }
+    friend bool operator!=(const HASH& x,const HASH& y){
+        return !(x==y);
+    }
+    friend bool operator<(const HASH& x,const HASH& y){
+        return x.value<y.value;
+    }
+    friend HASH operator+(HASH x,const HASH& y){return x+=y;}
+    friend HASH operator-(HASH x,const HASH& y){return x-=y;}
+    friend HASH operator*(HASH x,const HASH& y){return x*=y;}
 };
+const HASH BASE{_BASE1_,BASE2_,BASE3_};
