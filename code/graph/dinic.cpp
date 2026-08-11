@@ -2,13 +2,16 @@ struct dinic{
     vector<vector<array<int,3>>> edge;
     VI lv,cur;
     int n,s,t;
-    void init(int a,int b,int c){
+    void dinic_init(int a,int b,int c){
         n=a,s=b,t=c;
         edge.assign(n+3,{});
     }
+    dinic(int a=0,int b=0,int c=0){
+        dinic_init(a,b,c);
+    }
     void addedge(int x,int y,int w){
         int ix=edge[x].size(),iy=edge[y].size();
-        edge[x].push_back({y,w,iy});
+        edge[x].push_back({y,w,iy+(x==y)});
         edge[y].push_back({x,0,ix});
     }
     inline int bfs(){
@@ -31,16 +34,16 @@ struct dinic{
     int dfs(int u,int flow){
         if(u==t)return flow;
         int rst=flow;
-        for(int &i=cur[u];i<edge[u].size()&&rst;++i){
+        for(int &i=cur[u];i<edge[u].size();++i){
             auto &[v,w,p]=edge[u][i];
             if(lv[v]==lv[u]+1&&w){
                 int &iw=edge[v][p][1];
                 int c=dfs(v,min(rst,w));
-                w-=c;
-                iw+=c;
-                rst-=c;
+                w-=c,iw+=c,rst-=c;
             }
+            if(!rst)break;
         }
+        if(rst)lv[u]=-1;
         return flow-rst;
     }
     int solve(){

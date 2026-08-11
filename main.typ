@@ -71,6 +71,14 @@ Time Complexity: $O((N+M)log M)$
 
 #code-file("code/graph/dijkstra.cpp")
 
+=== SPFA
+
+#code-file("code/graph/spfa.cpp")
+
+==== 应用: 差分约束
+
+=== Johnson全源最短路
+
 == Tarjan
 
 === 强连通分量
@@ -91,17 +99,19 @@ Time Complexity: $O((N+M)log M)$
 
 == 生成树
 
-=== 并查集
-
-=== matrix-tree定理
-
 === Prim
 
 === Kruskal
 
+#code-file("code/graph/kruskal.cpp")
+
 ==== 应用: Kruskal 重构树
 
 === Boruvka
+
+=== 可撤销并查集
+
+#code-file("code/graph/undodsu.cpp")
 
 = 网络流 / Flow
 
@@ -113,7 +123,9 @@ Time Complexity: $O((N+M)log M)$
 
 === 最小费用最大流
 
-=== 最大费用可行流
+#code-file("code/graph/mcmf.cpp")
+
+==== 应用: 最小费用可行流
 
 === 上下界最小费用可行流
 
@@ -121,9 +133,6 @@ Time Complexity: $O((N+M)log M)$
 
 == 模拟费用流(反悔贪心)
 
-
-
-= 计算几何 / Geometry
 
 = 数据结构 / Data Structure
 
@@ -137,15 +146,17 @@ Time Complexity: $O((N+M)log M)$
 
 == 可裂&可并线段树
 
+#code-file("code/data-structure/sgmTree.cpp")
+
+== 势能线段树
+
+== FHQ_Treap
+
+#code-file("code/data-structure/fhqtreap.cpp")
+
 = 数学 / Math
 
-== 线性代数
-
-=== 矩阵类
-
-=== 高斯消元&行列式
-
-== 组合数学
+== 组合数学-
 
 === 容斥原理
 
@@ -153,6 +164,8 @@ Time Complexity: $O((N+M)log M)$
 ==== 二项式反演
 ==== 斯特林反演
 ==== min-max反演
+
+=== Lucas 定理
 
 === 斯特林数
 
@@ -162,11 +175,13 @@ Time Complexity: $O((N+M)log M)$
 
 == 数论
 
+=== $mu$-反演
+
 === Extended GCD
 
 #code-file("code/math/exgcd.cpp")
 
-
+=== 欧拉取模定理
 
 === BSGS & exBSGS
 
@@ -174,9 +189,7 @@ Time Complexity: $O((N+M)log M)$
 
 === CRT & exCRT
 
-
-=== Lucas & exLucas
-
+#code-file("code/math/crt.cpp")
 
 === 线性筛素数&积性函数
 
@@ -185,6 +198,8 @@ Time Complexity: $O((N+M)log M)$
 === 杜教筛
 
 === min25筛
+
+=== 类欧几里得方法
 
 == 多项式
 === 复数FFT
@@ -196,7 +211,17 @@ Time Complexity: $O((N+M)log M)$
 
 = 杂项
 
+== 线性代数类
+
+#code-file("code/math/matrix.cpp")
+
+== matrix-tree定理
+
+== Prufer序列
+
 == 拉格朗日插值
+
+#code-file("code/math/lagrange.cpp")
 
 == LGV引理
 
@@ -207,6 +232,8 @@ Time Complexity: $O((N+M)log M)$
 == 高位前缀和/差分
 
 == FWT & FMT
+
+== 四边形不等式优化
 
 = 检查表 / Checklist
 

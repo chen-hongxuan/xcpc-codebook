@@ -19,7 +19,7 @@ const double pi=acos(-1);
 
 mt19937 rnd(time(0));
 
-inline void red(int &x){(x>=mo)&&(x-=mo);}
+inline void red(int &x){if(x>=mo)x-=mo;}
 inline int qpow(int x,int t=mo-2){
     int ret=1;
     for(;t;t>>=1,x=x*x%mo)if(t&1)ret=ret*x%mo;

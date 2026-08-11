@@ -18,7 +18,7 @@ const int _MOD_=998244353,_G_=3;
 
 struct poly{
     static const int mo=_MOD_,gn=_G_;
-    inline void red(int &x){(x>=mo)&&(x-=mo);}
+    inline void red(int &x){if(x>=mo)x-=mo;}
     inline int qpow(int x,int t=mo-2){
         int ret=1;
         for(;t;t>>=1,x=x*x%mo)if(t&1)ret=ret*x%mo;
