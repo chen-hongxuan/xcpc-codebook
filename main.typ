@@ -213,7 +213,11 @@ Time Complexity: $O((N+M)log M)$
 
 === 杜教筛
 
-=== min25筛
+#code-file("code/math/Du'sSieve.cpp")
+
+=== Min_25筛
+
+
 
 === 类欧几里得方法
 
