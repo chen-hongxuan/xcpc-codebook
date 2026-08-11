@@ -1,3 +1,9 @@
+#import "@preview/theorion:0.6.0": *
+#import cosmos.fancy: *   // 选择 fancy 主题样式
+#let theorem = theorem.with(numbering: none)
+
+#show: show-theorion
+
 #import "template.typ": codebook, code-file, note-box
 
 #show: codebook.with(
@@ -156,6 +162,8 @@ Time Complexity: $O((N+M)log M)$
 
 = 数学 / Math
 
+== 博弈论
+
 == 组合数学-
 
 === 容斥原理
@@ -183,6 +191,12 @@ Time Complexity: $O((N+M)log M)$
 
 === 欧拉取模定理
 
+#theorem[欧拉定理][
+]
+#theorem[拓展欧拉定理][
+
+]
+
 === BSGS & exBSGS
 
 #code-file("code/math/bsgs.cpp")
@@ -194,6 +208,8 @@ Time Complexity: $O((N+M)log M)$
 === 线性筛素数&积性函数
 
 #code-file("code/math/linearSieve.cpp")
+
+=== 数论分块
 
 === 杜教筛
 
@@ -231,7 +247,11 @@ Time Complexity: $O((N+M)log M)$
 
 == 高位前缀和/差分
 
+#code-file("code/math/sum&diff.cpp")
+
 == FWT & FMT
+
+去问王君睿.
 
 == 四边形不等式优化
 
