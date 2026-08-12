@@ -1,10 +1,23 @@
 #import "@preview/theorion:0.6.0": *
 #import cosmos.fancy: *   // 选择 fancy 主题样式
 #let theorem = theorem.with(numbering: none)
+// #set quote(block: true)
 
 #show: show-theorion
 
 #import "template.typ": codebook, code-file, note-box
+
+#let ps(body) = block(
+  width: 100%,
+  inset: (x: 10pt, y: 8pt),
+  fill: rgb("#f3f6fa"),
+  stroke: (
+    left: 2pt + rgb("#578989"),
+  ),
+  radius: 2pt,
+)[
+  *PS: * #body
+]
 
 #show: codebook.with(
   title: "chx@xjtu's XCPC codebook",
@@ -85,6 +98,8 @@ Time Complexity: $O((N+M)log M)$
 
 === Johnson全源最短路
 
+useless
+
 == Tarjan
 
 === 强连通分量
@@ -154,6 +169,8 @@ Time Complexity: $O((N+M)log M)$
 
 #code-file("code/data-structure/sgmTree.cpp")
 
+== 线段树二分
+
 == 势能线段树
 
 == FHQ_Treap
@@ -169,6 +186,9 @@ Time Complexity: $O((N+M)log M)$
 === 容斥原理
 
 ==== 子集反演
+
+
+
 ==== 二项式反演
 ==== 斯特林反演
 ==== min-max反演
@@ -192,9 +212,14 @@ Time Complexity: $O((N+M)log M)$
 === 欧拉取模定理
 
 #theorem[欧拉定理][
+  对于 $m in NN^+,a in ZZ$ , 若 $gcd(a,m)=1$ , 则 $ a^phi(m) equiv 1 (mod m) $
 ]
 #theorem[拓展欧拉定理][
-
+  对于 $m,k in NN^+,a in ZZ$ 有 $ a^k equiv cases(
+    a^(k mod phi(m)) &#strong[if] gcd(a,m)=1,
+    a^k &#strong[if] k<phi(m) and gcd(a,m)!=1,
+    a^((k mod phi(m))+phi(m)) &#strong[if] k>=phi(m) and gcd(a,m)!=1
+  )#h(1em) (mod m) $
 ]
 
 === BSGS & exBSGS
@@ -209,7 +234,9 @@ Time Complexity: $O((N+M)log M)$
 
 #code-file("code/math/linearSieve.cpp")
 
-=== 数论分块
+=== 整除分块
+
+
 
 === 杜教筛
 
@@ -222,6 +249,7 @@ Time Complexity: $O((N+M)log M)$
 === 类欧几里得方法
 
 == 多项式
+
 === 复数FFT
 
 #code-file("code/math/fft.cpp")
@@ -237,7 +265,46 @@ Time Complexity: $O((N+M)log M)$
 
 == matrix-tree定理
 
-== Prufer序列
+=== 无向图
+
+#h(2em) 设多重图 $G(V,E)$ 有 $n$ 个顶点, 那么我们构造如下矩阵 $(D_(i j))_(n times n)$
+$ &D_(i j)=cases(
+  deg(i) &#strong[if] i=j,
+  -|E(i,j)| &#strong[otherwise]
+) $
+则我们有定理
+#theorem[无向图][
+  对于任意的 $1<=i<=n$ , 记将 $D$ 去掉第 $i$ 行第 $i$ 列得到的子矩阵为 $D^((i))$ , 则 $G$ 上的以 $i$ 为根的生成树的数量 $tau(G,i)$ 满足 $ tau(G,i) =det D^((i)) $
+]
+#ps[
+  在无向图上区分根是没有意义的, 记 $tau(G)$ 为图 $G$ 的生成树个数, 那么 $tau(G)=tau(G,i)$ .
+]
+
+=== 有向图
+
+
+
+== Hall定理
+
+#theorem[Hall][
+  二分图
+]
+
+== Prüfer序列
+
+#h(2em) Prüfer 序列可以将一个带标号的 $n>=3$ 个节点的树用一个值域是 $[1,n]$ 的长度为 $n-2$ 的序列表示, 并且这种对映是双射. 它是这样建立的:\
+#h(1em) (1). 选择一个当前的树中的标号最小的叶子节点 $x$.\
+#h(1em) (2). 在序列的末尾加入 $x$ 连着唯一的那个点的标号.\
+#h(1em) (3). 将 $x$ 删去, 若树还剩下至少 $3$ 个顶点, 则返回 (1).
+
+这样我们就得到了一个长度为 $n-2$ 的序列, 可以验证这个映射是双射. 借助这个双射我们可以得到若干结果
+
+#theorem[Cayley公式][
+  完全图(有标号) $K_n$ 的生成树数量为 $ n^(n-2) $
+]
+#theorem[][
+  一个 $n$ 个点的带标号无向图, 它有 $k$ 个连通块, 我们希望添加 $k-1$ 条边使得整个图连通, 假定第 $i$ 个连通块里有 $s_i$ 个顶点, 那么添加边的方案数是$ n^(k-2)product_(i=1)^k s_i $
+]
 
 == 拉格朗日插值
 
