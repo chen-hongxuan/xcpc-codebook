@@ -2,7 +2,8 @@ struct DuJiao_sieve{
   static constexpr int mo=_MOD_;
   unordered_map<int,int> umap;
   function<int(int)> S_g,S_fg;
-  DuJiao_sieve(int inv_g,auto f,auto g){
+  template<class F,class G>
+  DuJiao_sieve(int inv_g,F f,G g){
     umap={{-1,inv_g}};
     S_g=f,S_fg=g;
   }
@@ -21,4 +22,4 @@ struct DuJiao_sieve{
       return umap[n]=ret*umap[-1]%mo;
     }
   }
-}sum_mu,sum_phi;
+};

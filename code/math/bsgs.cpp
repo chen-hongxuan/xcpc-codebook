@@ -17,7 +17,7 @@ namespace bsgs{
   int exBSGS(int a,int b,int p){
     if(p==1)return 0;
     int k=1,cnt=0,g;
-    while((g=gcd(a,p))>1){
+    while((g=__gcd(a,p))>1){
       if(b==k)return cnt;
       if(b%g)return -1;
       b/=g,p/=g,++cnt;
