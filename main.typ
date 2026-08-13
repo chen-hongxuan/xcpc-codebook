@@ -1,6 +1,8 @@
 #import "@preview/theorion:0.6.0": *
 #import cosmos.fancy: *   // 选择 fancy 主题样式
 #let theorem = theorem.with(numbering: none)
+#let corollary = corollary.with(numbering: none)
+#let property = property.with(numbering: none)
 // #set quote(block: true)
 
 #show: show-theorion
@@ -195,6 +197,11 @@ useless
 
 === Lucas 定理
 
+对于质数 $p$ 而言, 我们可以快速求出组合数对 $p$ 取余数的结果.
+#theorem[Lucas][
+  对于 $n,m in NN$ 有 $ binom(n,m) equiv binom(n mod p, m mod p)dot binom(lr(floor n/p floor.r),lr(floor m/p floor.r)) (mod p) $
+]
+
 === 斯特林数
 
 === 卡特兰数
@@ -234,9 +241,30 @@ useless
 
 #code-file("code/math/linearSieve.cpp")
 
-=== 整除分块
+=== 整除与数论分块
 
-
+#h(2em) 对于 $n in NN$ , 定义 $ D(n):={lr(floor n/i floor.r):1 <= i <= n} $
+则 $D(n)$ 有如下的性质
+#property[1][
+$|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
+]
+#property[2][
+  对于 $d in D(n)$ , 能够使得 $lr(floor n/i floor.r)=d$ 的 $i$ 是连续的, 更准确地, 这样的 $i$ 的取值范围是$ lr(floor n/(d+1)floor.r)<i<=lr(floor n/(d+1)floor.r) $
+]
+#corollary[2][
+  对于多元数论分块 $ lr(chevron lr(floor n_1/i floor.r),lr(floor n_2/i floor.r),...,lr(floor n_k/i floor.r) chevron.r) $ 它本质上只有 $O(|D(n_1)|+...+|D(n_k)|)$ 种取值(而非 $O(|D(n_1)|times...times|D(n_k)|)$ 种).
+]
+#property[3][
+  对于 $m in D(n)$ , 有 $ D(m) subset.eq D(n) $ 
+]
+#h(2em) 我们还有若干整除的性质, 包括但不限于
+#property[1][
+  对于 $n,x,y in NN$ 有 $ lr(floor lr(floor n/x floor.r)/ y floor.r)=lr(floor n/(x y) floor.r) $
+]
+以及上下取整的转化
+#property[2][
+  对于 $n,m in NN$ , 有 $ lr(ceil n/m ceil.r)=lr(floor (n-1)/m floor.r)+1 $
+]
 
 === 杜教筛
 
@@ -267,32 +295,58 @@ useless
 
 === 无向图
 
-#h(2em) 设多重图 $G(V,E)$ 有 $n$ 个顶点, 那么我们构造如下矩阵 $(D_(i j))_(n times n)$
-$ &D_(i j)=cases(
+#h(2em) 设无向多重图 $G(V,E)$ 有 $n$ 个顶点, 那么我们构造如下矩阵 $(D_(i j))_(n times n)$
+$ &D_(i j):=cases(
   deg(i) &#strong[if] i=j,
   -|E(i,j)| &#strong[otherwise]
 ) $
 则我们有定理
 #theorem[无向图][
-  对于任意的 $1<=i<=n$ , 记将 $D$ 去掉第 $i$ 行第 $i$ 列得到的子矩阵为 $D^((i))$ , 则 $G$ 上的以 $i$ 为根的生成树的数量 $tau(G,i)$ 满足 $ tau(G,i) =det D^((i)) $
+  对于任意的 $1<=i<=n$ , 记将 $D$ 去掉第 $i$ 行第 $i$ 列得到的子矩阵为 $D_((i))$ , 则 $G$ 上的以 $i$ 为根的全体生成树 $tau(G,i)$ 构成的集合满足 $ |tau(G,i)| =det D_((i)) $
 ]
 #ps[
-  在无向图上区分根是没有意义的, 记 $tau(G)$ 为图 $G$ 的生成树个数, 那么 $tau(G)=tau(G,i)$ .
+  在无向图上区分根是没有意义的, 记 $tau(G)$ 为图 $G$ 的所有生成树构成的集合, 那么 $tau(G)=tau(G,i)$ .
 ]
 
 === 有向图
 
-
+#h(2em) 在多重图 $G(V,E)$ 中我们类似地出两个矩阵 $(D^"in"_(i j))_(n times n),(D^"out"_(i j))_(n times n)$
+$
+&D^"out"_(i j):=cases(
+  deg^"out" (i) &#strong[if] i=j,
+  -|E(i->j)| &#strong[otherwise]
+),\
+&D^"in"_(i j):=cases(
+  deg^"in" (i) &#strong[if] i=j,
+  -|E(i->j)| &#strong[otherwise]
+)
+$
+则可以类似地导出有向图上的矩阵树定理
+#theorem[有向图,根向树][
+  对于 $1<=i<=n$ , 设将 $D^"out"$ 去掉第 $i$ 行第 $i$ 列得到的子矩阵为 $D^"out"_((i))$ , 则 $G$ 上的以 $i$ 为根的且所有边都指向根节点的全体生成树构成的集合 $tau^"root" (G,i)$ 满足$ |tau^"root" (G,i)|=det D^"out"_((i)) $
+]
+#theorem[有向图,叶向树][
+  对于 $1<=i<=n$ , 设将 $D^"in"$ 去掉第 $i$ 行第 $i$ 列得到的子矩阵为 $D^"in"_((i))$ , 则 $G$ 上的以 $i$ 为根的且所有边都指向叶子的全体生成树构成的集合 $tau^"leaf" (G,i)$ 满足$ |tau^"leaf" (G,i)|=det D^"leaf"_((i)) $
+]
+=== 带权形式
+#h(2em) 边 $e$ 有边权 $w(e)$ , 定义树 $T$ 的权值 $ w(T):=product_(e in T)w(e) $  则对于全体生成树的权值和 $ sum_(T in tau(G,i))w(T) $ 我们只需要把一个权重为 $w(e)$ 的边看成 $w(e)$ 重边即可.
 
 == Hall定理
 
-#theorem[Hall][
-  二分图
-]
+#h(2em) 对于一个二分图 $G(A,B,E)$ , 不妨设 $|A|<=|B|$ , 则 *Hall定理* 可以判定完美匹配是否存在.
 
+#theorem[Hall][
+  $G(A,B,E)$ 存在完美匹配当且仅当对于任意的 $X subset.eq A$ 均有 $ |{y in B: exists x in X "s.t." (x,y)in E }|>=|X| $
+]
+#corollary[][
+  正则二分图均存在完美匹配
+]
+#ps[
+  在一些边集具有特殊性质的二分图里, *Hall定理* 有奇效.
+]
 == Prüfer序列
 
-#h(2em) Prüfer 序列可以将一个带标号的 $n>=3$ 个节点的树用一个值域是 $[1,n]$ 的长度为 $n-2$ 的序列表示, 并且这种对映是双射. 它是这样建立的:\
+#h(2em) *Prüfer序列* 可以将一个带标号的 $n>=3$ 个节点的树用一个值域是 $[1,n]$ 的长度为 $n-2$ 的序列表示, 并且这种对映是双射. 它是这样建立的:\
 #h(1em) (1). 选择一个当前的树中的标号最小的叶子节点 $x$.\
 #h(1em) (2). 在序列的末尾加入 $x$ 连着唯一的那个点的标号.\
 #h(1em) (3). 将 $x$ 删去, 若树还剩下至少 $3$ 个顶点, 则返回 (1).
@@ -302,7 +356,7 @@ $ &D_(i j)=cases(
 #theorem[Cayley公式][
   完全图(有标号) $K_n$ 的生成树数量为 $ n^(n-2) $
 ]
-#theorem[][
+#corollary[][
   一个 $n$ 个点的带标号无向图, 它有 $k$ 个连通块, 我们希望添加 $k-1$ 条边使得整个图连通, 假定第 $i$ 个连通块里有 $s_i$ 个顶点, 那么添加边的方案数是$ n^(k-2)product_(i=1)^k s_i $
 ]
 
