@@ -3,7 +3,21 @@
 #let theorem = theorem.with(numbering: none)
 #let corollary = corollary.with(numbering: none)
 #let property = property.with(numbering: none)
+#let definition = definition.with(numbering: none)
+
 // #set quote(block: true)
+
+#let stl1(n, k) = math.vec(
+  n, k,
+  delim: "[",
+  gap: 0.1em,
+)
+
+#let stl2(n, k) = math.vec(
+  n, k,
+  delim: "{",
+  gap: 0.1em,
+)
 
 #show: show-theorion
 
@@ -181,32 +195,158 @@ useless
 
 = 数学 / Math
 
-== 博弈论
+== 组合数学
 
-== 组合数学-
+=== 错位排序
+
+#definition[
+  错排第 $n$ 项 $D_n$ 就是长度为 $n$ 的满足 $P_i!=i$ 的排列 $P$ 的数量.
+]
+有两种求解错排的方式.
+#theorem[递推][
+  $ 
+  D_n=cases(
+    1 &#strong[if] n=0,
+    0 &#strong[if] n=1,
+    (n-1)(D_(n-1)+D(n-2)) &#strong[otherwise]
+  )
+   $
+]
+#theorem[容斥][
+  $ D_n=n!sum_(k=0)^n (-1)^k/k! $
+]
+
+=== 卡特兰数与翻折定理
+
+#definition[组合][
+  卡特兰数第 $n$ 项 $C_n$ 就是有 $n$ 对括号的合法括号序列的数量.
+]
+
+从其组合定义出发可以获得卡特兰数有若干性质.
+
+#property[1][
+  $ C_n=cases(
+    1 &#strong[if] n=0,
+    sum_(i<n)C_i dot C_(n-1-i) &#strong[otherwise]
+  ) $
+]
+#property[2][
+  有许多组合对象计数的结果也是卡特兰数:
+  1. 从 $(0,0)$ 走到 $(n,n)$ 且不经过直线 $y=x+1$ 的方案数.
+  2. 圆上有 $2n$ 个点, 将这些点成对连接起来且使得所得到的 $n$ 条线段两两不交的方案数.
+  3. 有 $n$ 个点的不同形态的有根二叉树的个数(注意同形态递归地要求左右子树形态也相等, 并不是树同构).
+  4. 将 $n$ 个 $1$ 和 $-1$ 排成一个前缀和非负的序列的方案数.
+]
+为了更好地计算卡特兰数, 我们考虑引入翻折定理来计数 (2).1 .
+#theorem[翻折定理][
+  从 $(0,0)$ 出发, 在不经过直线 $y=x+k$ 的前提下, 走到点 $(n,m)$ (要求起点和终点在直线的同一侧)的方案数为
+  $
+  binom(n+m,n)-binom(n+m,n+k)
+  $
+  相当于从 $(0,0)$ 出发不加限制地走到 $(n,m)$ 的方案数减去从 $(0,0)$ 出发不加限制地走到 $(m-k,n+k)$ (终点 $(n,m)$ 关于 $y=x+k$ 的对称点)的方案数.
+]
+直接应用到卡特兰数上可以得到.
+#corollary[卡特兰数通项公式][
+  $ C_n=binom(2n,n)-binom(2n,n+1) $
+]
+=== 斯特林数与下降幂
+
+==== 第一类斯特林数
+
+#definition[
+  第一类斯特林数第 $n$ 行第 $k(<=n)$ 列 $stl1(n,k)$ 就是将 $n$ 个两两不同的元素划分为 $k$ 个无编号的非空轮换(圆排列)的方案数.
+]
+朴素的求值是通过递推式的方式来求解
+#theorem[递推][
+  $ stl1(n,k)=cases(
+    1 &#strong[if] n=0 and k=0,
+    0 &#strong[if] n!=0 and k=0,
+    stl1(n-1,k-1)+(n-1) stl1(n-1,k) &#strong[otherwise]
+  ) $
+]
+我们可以借助多项式乘法来求同一行/同一列的第一类斯特林数的值
+
+#theorem[同一行第一类斯特林数][
+  对于第 $n$ 行
+]
+#theorem[同一列第一类斯特林数][
+
+]
+
+==== 第二类斯特林数
+
+#definition[
+  第二类斯特林数第 $n$ 行第 $k(<=n)$ 列 $stl2(n,k)$ 就是将 $n$ 个两两不同的元素划分为 $k$ 个无编号非空集合的方案数.
+]
+朴素的求值也是通过递推式和容斥两种方式来求解
+#theorem[递推][
+  $ stl2(n,k)=cases(
+    1 &#strong[if] n=0 and k=0,
+    0 &#strong[if] n!=0 and k=0,
+    stl2(n-1,k-1)+k stl2(n-1,k) &#strong[otherwise]
+  ) $
+]
+#theorem[容斥][
+  $
+  stl2(n,m)=sum_(i=0)^m ((-1)^(m-i))/((m-i)!)dot (i^n)/(i!) 
+  $
+]
+类似于第一类斯特林数, 我们还可以借助多项式乘法来求同一行/同一列的第二类斯特林数的值
+
+#theorem[同一行第二类斯特林数][
+  对于第 $n$ 行, 令 $ F(x):=sum_i i^n/i! x^n,G(x):=sum_i (-1)^i/i! x^i$ 则对于 $i<=n$ 有 $ stl2(n,i)=[x^i](F(x) dot G(x)) $
+]
+#theorem[同一列第二类斯特林数][
+  对于第 $n$ 列, 令 $ F(x):=sum_(i>=1)1/i! x^i (=exp(x)-1) $ 则对于任意的 $k$ 有 $ stl2(k,n)=(lr([x^k/k!])F^n (x))/n! $
+]
 
 === 容斥原理
 
 ==== 子集反演
 
-
+#theorem[子集形式][
+  $ &g_S=sum_(T subset.eq S)f_T, \ &f_S=(-1)^(|S|)sum_(T subset.eq S)(-1)^(|T|)g_T. $
+]
+#theorem[超集形式][
+  $ &g_S=sum_(T supset.eq S)f_T, \ &f_S=(-1)^(|S|)sum_(T supset.eq S)(-1)^(|T|)g_T. $
+]
 
 ==== 二项式反演
+
+#theorem[前缀形式][
+  $
+  &g_i=sum_(j<=i)binom(i,j)f_j,\
+  &f_i=(-1)^i sum_(j<=i)(-1)^j binom(i,j)g_j
+  $
+]
+#theorem[后缀形式][
+  $
+  &g_i=sum_(j>=i)binom(j,i)f_j,\
+  &f_i=(-1)^i sum_(j>=i)(-1)^j binom(j,i)g_j 
+  $
+]
+#theorem[bonus: 二维形式][
+  $
+  &g_(i,j)=sum_(i'<=i)sum_(j'<=j)binom(i,i')binom(j,j')f_(i',j'),\
+  &f_(i,j)=(-1)^(i+j)sum_(i'<=i)sum_(j'<=j)(-1)^(i'+j')binom(i,i')binom(j,j')f_(i',j')
+  $
+]
+#ps[
+  多维形式同理, 方法就是在容斥系数里堆叠地乘上对应系数的 $-1$ 次幂. 甚至可以同时存在不同的两个方向的容斥(这就是为什么前后缀要写成相同的形式, 这样可以方便合并).
+]
 ==== 斯特林反演
 ==== min-max反演
 
 === Lucas 定理
 
-对于质数 $p$ 而言, 我们可以快速求出组合数对 $p$ 取余数的结果.
+#h(2em) 对于质数 $p$ 而言, 我们可以快速求出组合数对 $p$ 取余数的结果.
 #theorem[Lucas][
   对于 $n,m in NN$ 有 $ binom(n,m) equiv binom(n mod p, m mod p)dot binom(lr(floor n/p floor.r),lr(floor m/p floor.r)) (mod p) $
 ]
 
-=== 斯特林数
-
-=== 卡特兰数
-
 === 生成函数
+
+== 博弈论
 
 == 数论
 
@@ -287,6 +427,10 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 
 = 杂项
 
+== Millar-Rabin素性测试
+
+#code-file("code/math/mr.cpp")
+
 == 线性代数类
 
 #code-file("code/math/matrix.cpp")
@@ -333,7 +477,7 @@ $
 
 == Hall定理
 
-#h(2em) 对于一个二分图 $G(A,B,E)$ , 不妨设 $|A|<=|B|$ , 则 *Hall定理* 可以判定完美匹配是否存在.
+#h(2em) 对于一个二分图 $G(A,B,E)$ , 不妨设 $|A|<=|B|$ , 则*Hall定理*可以判定完美匹配是否存在.
 
 #theorem[Hall][
   $G(A,B,E)$ 存在完美匹配当且仅当对于任意的 $X subset.eq A$ 均有 $ |{y in B: exists x in X "s.t." (x,y)in E }|>=|X| $
@@ -342,11 +486,11 @@ $
   正则二分图均存在完美匹配
 ]
 #ps[
-  在一些边集具有特殊性质的二分图里, *Hall定理* 有奇效.
+  在一些边集具有特殊性质的二分图里, *Hall定理*有奇效.
 ]
 == Prüfer序列
 
-#h(2em) *Prüfer序列* 可以将一个带标号的 $n>=3$ 个节点的树用一个值域是 $[1,n]$ 的长度为 $n-2$ 的序列表示, 并且这种对映是双射. 它是这样建立的:\
+#h(2em) *Prüfer序列*可以将一个带标号的 $n>=3$ 个节点的树用一个值域是 $[1,n]$ 的长度为 $n-2$ 的序列表示, 并且这种对映是双射. 它是这样建立的:\
 #h(1em) (1). 选择一个当前的树中的标号最小的叶子节点 $x$.\
 #h(1em) (2). 在序列的末尾加入 $x$ 连着唯一的那个点的标号.\
 #h(1em) (3). 将 $x$ 删去, 若树还剩下至少 $3$ 个顶点, 则返回 (1).
