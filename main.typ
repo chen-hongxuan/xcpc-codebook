@@ -201,7 +201,7 @@ useless
 
 #definition[
   错排第 $n$ 项 $D_n$ 就是长度为 $n$ 的满足 $P_i!=i$ 的排列 $P$ 的数量.
-]
+]\ 
 有两种求解错排的方式.
 #theorem[递推][
   $ 
@@ -220,7 +220,7 @@ useless
 
 #definition[组合][
   卡特兰数第 $n$ 项 $C_n$ 就是有 $n$ 对括号的合法括号序列的数量.
-]
+]\
 
 从其组合定义出发可以获得卡特兰数有若干性质.
 
@@ -236,7 +236,8 @@ useless
   2. 圆上有 $2n$ 个点, 将这些点成对连接起来且使得所得到的 $n$ 条线段两两不交的方案数.
   3. 有 $n$ 个点的不同形态的有根二叉树的个数(注意同形态递归地要求左右子树形态也相等, 并不是树同构).
   4. 将 $n$ 个 $1$ 和 $-1$ 排成一个前缀和非负的序列的方案数.
-]
+]\ 
+
 为了更好地计算卡特兰数, 我们考虑引入翻折定理来计数 (2).1 .
 #theorem[翻折定理][
   从 $(0,0)$ 出发, 在不经过直线 $y=x+k$ 的前提下, 走到点 $(n,m)$ (要求起点和终点在直线的同一侧)的方案数为
@@ -249,21 +250,23 @@ useless
 #corollary[卡特兰数通项公式][
   $ C_n=binom(2n,n)-binom(2n,n+1) $
 ]
-=== 斯特林数与下降幂
+=== 斯特林数与下降/上升幂
 
 ==== 第一类斯特林数
 
 #definition[
   第一类斯特林数第 $n$ 行第 $k(<=n)$ 列 $stl1(n,k)$ 就是将 $n$ 个两两不同的元素划分为 $k$ 个无编号的非空轮换(圆排列)的方案数.
-]
+]\
 朴素的求值是通过递推式的方式来求解
+
 #theorem[递推][
   $ stl1(n,k)=cases(
     1 &#strong[if] n=0 and k=0,
     0 &#strong[if] n!=0 and k=0,
     stl1(n-1,k-1)+(n-1) stl1(n-1,k) &#strong[otherwise]
   ) $
-]
+]\
+
 我们可以借助多项式乘法来求同一行/同一列的第一类斯特林数的值
 
 #theorem[同一行第一类斯特林数][
@@ -278,7 +281,7 @@ useless
 
 #definition[
   第二类斯特林数第 $n$ 行第 $k(<=n)$ 列 $stl2(n,k)$ 就是将 $n$ 个两两不同的元素划分为 $k$ 个无编号非空集合的方案数.
-]
+]\ 
 朴素的求值也是通过递推式和容斥两种方式来求解
 #theorem[递推][
   $ stl2(n,k)=cases(
@@ -291,15 +294,41 @@ useless
   $
   stl2(n,m)=sum_(i=0)^m ((-1)^(m-i))/((m-i)!)dot (i^n)/(i!) 
   $
-]
+]\
 类似于第一类斯特林数, 我们还可以借助多项式乘法来求同一行/同一列的第二类斯特林数的值
 
 #theorem[同一行第二类斯特林数][
   对于第 $n$ 行, 令 $ F(x):=sum_i i^n/i! x^n,G(x):=sum_i (-1)^i/i! x^i$ 则对于 $i<=n$ 有 $ stl2(n,i)=[x^i](F(x) dot G(x)) $
-]
+]\
 #theorem[同一列第二类斯特林数][
   对于第 $n$ 列, 令 $ F(x):=sum_(i>=1)1/i! x^i (=exp(x)-1) $ 则对于任意的 $k$ 有 $ stl2(k,n)=(lr([x^k/k!])F^n (x))/n! $
 ]
+
+==== 下降/上升幂
+
+#definition[][
+  对于 $n in NN$ , 定义上升幂$ x^(overline(n))&:=product_(k=0)^(n-1)(x+k)\ &=x dot (x+1) dot ... dot (x+n-1) $类似地, 定义下降幂 $ x^(underline(n))&:=product_(k=0)^(n-1)(x-k)\ &=x dot (x-1) dot...dot (x-n+1) $
+]\
+
+借助斯特林数我们可以将上升/下降幂和普通幂转化.
+
+#theorem[上升幂与普通幂转化][
+  对于 $n in NN$ , 有 $ &x^overline(n)=sum_(k=0)^n stl1(n,k)x^k\ &x^n=(-1)^n sum_(k=0)^n (-1)^k stl2(n,k)x^overline(k) $
+]\
+#theorem[下降幂与普通幂转化][
+  对于 $n in NN$ , 有 $ &x^n=sum_(k=0)^n stl2(n,k)x^underline(k)\ &x^underline(n)=(-1)^n sum_(k=0)^n (-1)^k stl1(n,k)x^k $
+]\
+
+下降幂的形式天然为我们描述包含组合数的式子提供了大量便利
+
+#property[组合数][
+  $ n^underline(k)&=(n!)/(n-k)!\ &=binom(n,k) k! \ \ n^overline(k)&=binom(n+k-1,k)k! $ 
+]
+#property[差分][
+  $ Delta x^underline(k+1) &:=(x+1)^underline(k+1)-x^underline(k+1)\ &=(k+1) x^underline(k) $ 
+]
+
+=== 十二重计数
 
 === 容斥原理
 
@@ -335,8 +364,55 @@ useless
 #ps[
   多维形式同理, 方法就是在容斥系数里堆叠地乘上对应系数的 $-1$ 次幂. 甚至可以同时存在不同的两个方向的容斥(这就是为什么前后缀要写成相同的形式, 这样可以方便合并).
 ]
+#ps[
+  多维的变换不要直接枚举, 可以参考高位前缀和那样一维一维地变换, 即先做第 $1$ 维, 再在做好的数组上做第 $2$ 维, 再在做好的数组上做第 $3$ 维 ... , 这样的话时间复杂度就是 $O(n^(k+1))$ 而非 $O(n^(2k))$ .
+]
 ==== 斯特林反演
+
+#theorem[前缀形式][
+  $
+  &g_i=sum_(j<=i)stl2(i,j)f_j,\
+  &f_i=(-1)^i sum_(j<=i)(-1)^j stl1(i,j)g_j
+  $
+]
+#theorem[后缀形式][
+  $
+  &g_i=sum_(j>=i)stl2(j,i)f_j,\
+  &f_i=(-1)^i sum_(j>=i)(-1)^j stl1(j,i)g_j
+  $
+]
+#ps[
+  类似于二项式反演, 斯特林反演同样可以多维叠加, 且叠加的方式是一样的, 注意实现也是逐维度地去变换, 不要大力枚举.
+]
 ==== min-max反演
+
+#theorem[本体形式][
+  对于长度为 $n$ 的序列 $chevron a_i:1<=i<=n chevron.r$ 以及集合 $S subset.eq {1,2,...,n}$ 有
+  $
+  min_(i in S) a_i=-sum_(T subset.eq S\ T!=emptyset)(-1)^(|T|)max_(i in T)a_i
+  \
+  max_(i in S) a_i=-sum_(T subset.eq S\ T!=emptyset)(-1)^(|T|)min_(i in T)a_i
+  $
+]\
+这个东西在平凡的情形下是没什么用的, 但是它可以套在期望上, 于是可以得到一个很强大的反演公式.
+#theorem[期望版本][
+  对于长度为 $n$ 的序列 $chevron a_i:1<=i<=n chevron.r$ 以及集合 $S subset.eq {1,2,...,n}$ 有
+  $
+  EE[min_(i in S) a_i]=-sum_(T subset.eq S\ T!=emptyset)(-1)^(|T|)EE[max_(i in T)a_i]
+  \
+  EE[max_(i in S) a_i]=-sum_(T subset.eq S\ T!=emptyset)(-1)^(|T|)EE[min_(i in T)a_i]
+  $
+]
+
+=== 二项式定理
+
+#theorem[二项式][
+  对于 $n in NN$ 有 $ (a+b)^n=sum_(i<=n)binom(n,i)a^i b^(n-i) $
+]\ 
+以及高维的相关结果
+#theorem[高维][
+  对于 $n in NN$ 有 $ (a_1+...+a_k)^n=sum_(i_1+...+i_k=n) binom(n,i_1,...,i_k)a_1^(i_1)dot ...dot a_k^(i_k) $ 
+]
 
 === Lucas 定理
 
@@ -397,11 +473,11 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 ]
 #property[3][
   对于 $m in D(n)$ , 有 $ D(m) subset.eq D(n) $ 
-]
+]\
 #h(2em) 我们还有若干整除的性质, 包括但不限于
 #property[1][
   对于 $n,x,y in NN$ 有 $ lr(floor lr(floor n/x floor.r)/ y floor.r)=lr(floor n/(x y) floor.r) $
-]
+]\
 以及上下取整的转化
 #property[2][
   对于 $n,m in NN$ , 有 $ lr(ceil n/m ceil.r)=lr(floor (n-1)/m floor.r)+1 $

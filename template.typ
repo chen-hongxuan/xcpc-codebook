@@ -133,8 +133,8 @@
     header: none,
     footer: none,
   )[
-    #set text(size: 6.4pt)
-    #set par(leading: 0.12em)
+    #set text(size: 8pt)
+    #set par(leading: 0.3em)
     #heading(level: 1, numbering: none, outlined: false)[目录 / Contents]
     #outline(title: none, depth: 3, indent: 1em)
   ]
