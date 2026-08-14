@@ -4,6 +4,7 @@
 #let corollary = corollary.with(numbering: none)
 #let property = property.with(numbering: none)
 #let definition = definition.with(numbering: none)
+#let example = example.with(numbering: none)
 
 // #set quote(block: true)
 
@@ -56,6 +57,8 @@
 ]
 
 == 对拍模板
+
+#code-file("code/basic/chk_template.cpp");
 
 = 字符串 / String
 
@@ -179,17 +182,48 @@ useless
 
 #code-file("code/data-structure/bittree.cpp")
 
-== 主席树
+== 线段树系列
+
+=== 主席树
 
 #code-file("code/data-structure/jtree.cpp")
 
-== 可裂&可并线段树
+=== 可裂&可并线段树
 
 #code-file("code/data-structure/sgmTree.cpp")
 
-== 线段树二分
+=== 线段树二分
 
-== 势能线段树
+#code-file("code/data-structure/sgtBisearch.cpp")
+
+=== 势能线段树
+
+#h(2em)准确来讲, 势能线段树并不是某种功能实现范式, 而是通过赋予线段树节点势能的方式来证明某些在线段树上的"暴力"操作的时间复杂度是合法的. 以下提供若干势能线段树的例子.
+
+#let hr = line(length: 100%)
+
+#example[1][
+  维护序列 $chevron a_i chevron.r$, 支持
+  1. 给出 $l,r,v$ , 对全体 $i in [l,r]$ 执行 $a_i <- min(a_i,v)$ .
+  2. 给出 $x,v$ , 执行 $a_x <- v$ .
+  3. 给出 $l,r$ , 回答 $sum_(i in[l,r]) a_i$
+
+  *solution:* 线段树的节点维护区间权值和 sum , 最大值 max#sub[1] , 次大值 max#sub[2] 以及最大值的个数 cnt ; 懒标记维护上一次 pushdown 之后在这个节点上进行的操作1的 $v$ 的最小值. 我们只考虑维护操作 1 , 首先把修改分解为散块, 如果 $v>=max_1$ 则不作修改; 若 $max_1>v>max_2$ 则在懒标记上修改; 若 $max_2>=v$ 则递归下去.\
+  #h(2em)我们定义每个节点的势能是这个节点掌管的区间中有多少不同的数, 整棵树的势能是全体节点的势能之和. 每次单点修改会使得总势能增加 $O(log N)$ , 初始势能为 $O(N log N)$ , 每次(分解后的)递归操作会使得递归下去的那个节点的势能至少减少 $1$ 因此递归的总次数不超过 $O(N log N)$ .
+]
+
+#example[2][
+  维护序列 $chevron a_i (<=10^9) chevron.r$, 支持
+  1. 给出 $l,r,v$ , 对全体 $i in [l,r]$ 执行 $a_i <- gcd(a_i,v)$ .
+  2. 给出 $x,v$ , 执行 $a_x <- v$ .
+  3. 给出 $l,r$ , 回答 $sum_(i in[l,r]) a_i$
+
+  *solution:* 对每个节点维护区间和 sum , 区间最小公倍数 lcm , 区间最小值 min ; 懒标记维护上一次 pushdown 之后在这个节点进行操作1的值 $v$ 的最大公约数. 每次操作 1 把修改分解为整块后, 对每个整块判断是否有 $lcm|v$ , 若 $lcm|v$ 则检查是否有 $min=lcm$ , 若是则直接在懒标记上修改, 若不是则递归下去.
+  \
+  #h(2em)我们定义每个节点的势能为 $log lcm$ , 同时我们称一个节点是有效的当且仅当不存在它的祖先满足 $lcm=min$ (相当于一个区间都是同一个值那就把它的子树全部都砍掉了), 之后整棵树的势能是有效节点的势能之和. 每次单点会增加 $O(log N)$ 个有效点, 并且使得 $O(log N)$ 个点的势能增加 $O(log V)$ , 则总势能至多增加 $O(log N log V)$ , 初始的势能是 $O(N log V)$ 的, 每次递归下去会使得此节点的 $lcm$ 至少除以 $2$ , 因此势能至少减少 $1$ , 所以总的递归次是是 $O(N log N log V)$ 的.
+]
+
+=== 历史版本和问题
 
 == FHQ_Treap
 
