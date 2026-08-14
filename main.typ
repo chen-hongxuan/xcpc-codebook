@@ -7,6 +7,8 @@
 
 // #set quote(block: true)
 
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, node, edge
+
 #let stl1(n, k) = math.vec(
   n, k,
   delim: "[",
@@ -318,6 +320,17 @@ useless
 #theorem[下降幂与普通幂转化][
   对于 $n in NN$ , 有 $ &x^n=sum_(k=0)^n stl2(n,k)x^underline(k)\ &x^underline(n)=(-1)^n sum_(k=0)^n (-1)^k stl1(n,k)x^k $
 ]\
+#ps[
+  写成交换图的话就清晰很多, 其中 sym 就是带上了 $(-1)^k$ 的系数.\ \ 
+#align(center)[
+  #diagram(
+    cell-size: 12mm,
+    $
+    x^overline(n) edge("r",stl2(n,k)_"sym",->,bend: #15deg) & edge("l",stl1(n,k),->,bend: #15deg )x^n edge("r",stl1(n,k)_"sym",->,bend:#15deg) &edge("l",stl2(n,k),->,bend:#15deg) x^underline(n)\ 
+    $,
+  )
+]
+]\
 
 下降幂的形式天然为我们描述包含组合数的式子提供了大量便利
 
@@ -427,7 +440,40 @@ useless
 
 == 数论
 
-=== $mu$-反演
+=== $mu$-反演与Dirichlet卷积
+
+==== $mu$-反演
+#h(2em) 对于一些数论函数我们直接计算他们是很困难的, 但是相对而言计算他们的约数项的和或者倍数项的和却很容易, 那么就可以借助整除序 $(NN,|)$ 上的 $mu$ (即莫比乌斯函数)来帮助我们反演.
+#theorem[$mu$-反演, 约数和版本][
+  $
+  &g(n)=sum_(d|n)f(d),
+  \
+  &f(n)=sum_(d|n)mu(n/d)g(d)
+  $
+]
+#theorem[$mu$-反演, 倍数和版本][
+  $
+  &g(n)=sum_(n|d)f(d),
+  \
+  &f(n)=sum_(n|d)mu(d/n)g(d)
+  $
+]
+==== Dirichlet卷积与积性函数
+
+#definition[Dirichlet卷积][
+  对于数论函数 $f,g:NN->NN$ , 定义他们的Dirichlet卷积
+  $
+  f*g:&NN->NN\ &n mapsto sum_(d|n)f(d)dot g(n/d)
+  $
+]
+#definition[积性函数][
+  数论函数 $f:NN->NN$ 是积性函数当且仅当对于 $n,m in NN$ , 若 $gcd(n,m)=1$ 则 $f(n)dot f(m)=f(n dot m)$ 成立.
+]\
+根据积性函数的定义, 我们
+#theorem[
+  
+]
+
 
 === Extended GCD
 
