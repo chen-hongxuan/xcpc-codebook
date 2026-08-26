@@ -38,18 +38,34 @@
   *PS: * #body
 ]
 
+#let code-info(api, complexity) = block(
+  width: 100%,
+  inset: (left: 2pt),
+  above: 0pt,
+  below: 1pt,
+  stroke: (left: 0.5pt + luma(150)),
+)[
+  #set text(size: 6.5pt)
+  *接口:* #api \
+  *复杂度:* #complexity
+]
+
 #show: codebook.with(
   title: "chx@xjtu's XCPC codebook",
   short-title: "XCPC Codebook",
   school: "Xi'an Jiaotong University",
   team: "Emperor of Kirin",
-  members: ("chx*", "wjr", "jyc"),
+  author: "chenhongxuan",
 )
 
 = 基础 / Basic
 
 == 比赛模板
 
+#code-info(
+  [`read()` 读整数；`chmin/chmax` 条件更新；`red` 单次归约；`qpow` 求模幂；`solve()` 为单组入口。],
+  [`read` 为 $Theta(k)$（$k$ 为读取字符数），`qpow` 为 $O(log(t+1))$，其余辅助函数 $O(1)$；额外空间均为 $O(1)$。],
+)
 #code-file("code/basic/template.cpp")
 
 #note-box[
@@ -58,6 +74,10 @@
 
 == 对拍模板
 
+#code-info(
+  [`main()` 编译生成器、标准程序与待测程序，循环生成数据并用 `diff` 比较输出，直到发现差异。],
+  [时间正比于编译及已执行轮次的总耗时，若始终无差异则不终止；自身额外空间 $O(1)$，磁盘空间为一轮输入、输出与可执行文件总大小。],
+)
 #code-file("code/basic/chk_template.cpp");
 
 = 字符串 / String
@@ -66,18 +86,34 @@
 
 === 哈希类(三哈希)
 
+#code-info(
+  [`HASH(x)`/`HASH(x,y,z)` 构造三元哈希；`[]` 访问分量；`+=,-=,*=` 及对应二元运算逐模计算；比较运算比较三元组。],
+  [模数个数固定为 $3$，所有接口的时间与额外空间均为 $O(1)$。],
+)
 #code-file("code/string/hash.cpp")
 
 === AC自动机
 
+#code-info(
+  [`init()` 清空；`insert(str)` 插入小写模式串并返回终点；`construct()` 构造 fail 指针并补全转移。],
+  [设模式总长为 $L$、状态数为 $P$：插入总计 $O(L)$，构造 $O(P)$，空间 $O(P)$；当前 `cnt` 未给根节点预留位置，`insert` 会越界。],
+)
 #code-file("code/string/acam.cpp")
 
 === KMP & exKMP
 
+#code-info(
+  [`KMP(x,pi)` 求失配数组（最长真 border 的末下标）；`exKMP(x,z)` 求各后缀与原串的 LCP，约定 `pi[0]=-1,z[0]=0`。],
+  [字符串长度为 $n$ 时，两者均为 $O(n)$ 时间、$O(n)$ 输出空间，除此之外额外空间 $O(1)$。],
+)
 #code-file("code/string/kmp.cpp")
 
 === 后缀自动机
 
+#code-info(
+  [`sam_init()` 重置；`extend(c)` 追加小写字符；`construct(str)` 重建 SAM 并返回整串对应的 `last` 状态。],
+  [长度为 $n$ 的整串构造总时间、状态数与空间均为 $O(n)$；单次 `extend` 最坏 $O(n)$、序列上均摊 $O(1)$。],
+)
 #code-file("code/string/sam.cpp")
 
 === 回文自动机
@@ -86,6 +122,10 @@ STO$PP$ LE$AA$RNING USELESS ALGORITH$MM$!
 
 === 后缀排序
 
+#code-info(
+  [`work(s,sa,opt)` 将第 $i$ 小后缀的起点写入 `sa[i]`；`opt=0` 仅返回最终排名，`opt=1` 返回各倍增长度的排名数组。],
+  [时间 $O(n log^2 n)$；`opt=0` 空间 $O(n)$，`opt=1` 空间 $O(n log n)$。],
+)
 #code-file("code/string/sa.cpp")
 
 == 结论
@@ -96,26 +136,40 @@ STO$PP$ LE$AA$RNING USELESS ALGORITH$MM$!
 
 === Dijkstra
 
-接口规则
-
-```
-dijkstra::work(n,s,edge,dis)
-n -> 节点个数
-s -> 起点集合
-edge -> 边集, 边的存储格式为{v(指向),w(边权)}
-dis -> 导出的最短路数组
-```
-
-
-Time Complexity: $O((N+M)log M)$
-
+#code-info(
+  [`work(n,s,edge,dis)` 在非负权图上求多源最短路，源点集为 `s`，结果写入 `dis`。],
+  [时间 $O((n+m)log n)$，空间 $O(n+m)$。],
+)
 #code-file("code/graph/dijkstra.cpp")
 
 === SPFA
 
+#code-info(
+  [`work(n,s,edge,dis)` 求多源最短路并写入 `dis`；返回 `1` 表示存在从源集可达的负环，否则返回 `0`。],
+  [最坏时间 $O(n m)$，额外空间 $O(n)$。],
+)
 #code-file("code/graph/spfa.cpp")
 
 ==== 应用: 差分约束
+
+#definition[差分约束][
+  差分约束是由若干形如 $x_i-x_j<=c$ 的一次不等式组成的约束系统. 我们需要判断它是否有解, 并求出一组满足所有限制的变量值.
+]\ 
+#h(2em) 将限制统一写成 $x_v<=x_u+w$, 它与最短路的松弛条件 $d_v<=d_u+w$ 相同, 因此从 $u$ 向 $v$ 连一条权为 $w$ 的有向边. 常见限制的连边方式如下:
+
+1. $x_a-x_b<=c$: 从 $b$ 向 $a$ 连权为 $c$ 的边.
+2. $x_a-x_b>=c$: 化为 $x_b-x_a<=-c$, 从 $a$ 向 $b$ 连权为 $-c$ 的边.
+3. $x_a-x_b=c$: 同时连 $b$ 到 $a$ 的 $c$ 边和 $a$ 到 $b$ 的 $-c$ 边. 特别地, $x_a=x_b$ 时两条边的权均为 $0$.
+
+#h(2em) 新建超级源点 $s$, 从 $s$ 向每个变量点连权为 $0$ 的边, 再运行 Bellman--Ford 或 SPFA. 超级源点使所有点均可达, 从而能够检查整个图中的矛盾.
+\ \ 
+#theorem[求解结果][
+  若图中存在负环, 则沿环累加会得到矛盾, 原约束系统无解; 否则令 $x_i=d_i$, 其中 $d_i$ 是 $s$ 到 $i$ 的最短路, 就得到一组可行解.
+]
+#ps[
+  解通常不唯一: 若 $(x_1,...,x_n)$ 是一组解, 则所有变量同时加上同一常数后仍然是解. 对于整数变量, 严格限制 $x_a-x_b<c$ 与 $x_a-x_b>c$ 可分别改写为 $<=c-1$ 与 $>=c+1$.
+]
+
 
 === Johnson全源最短路
 
@@ -125,18 +179,53 @@ useless
 
 === 强连通分量
 
+#code-info(
+  [`work(n,edge,color)` 对有向图进行 SCC 染色并返回分量数；编号按 Tarjan 出栈顺序生成。],
+  [时间 $O(n+m)$，额外空间 $O(n)$，递归栈最深 $O(n)$。],
+)
 #code-file("code/graph/tarjan1.cpp")
 
 ==== 应用: 2-SAT建图
 
-一个 2-SAT 问题是, 有 $n$ 个
+#definition[2-SAT][
+  有 $n$ 个布尔变量, 整个命题由若干个形如 $L_1 or L_2$ 的子句取合取构成, 其中每个文字 $L$ 是某个变量或其否定. 2-SAT 要求判断是否存在一种赋值使所有子句成立, 并在有解时构造一组方案.
+]\ 
+#h(2em) 对每个变量建立两个点: $F_i=i$ 表示 $x_i=0$, $T_i=i+n$ 表示 $x_i=1$, 二者互为否定点. 有向边 $A->B$ 表示文字 $A$ 成立会迫使 $B$ 成立. 子句 $L_1 or L_2$ 等价于两条蕴含边 $¬L_1->L_2$ 和 $¬L_2->L_1$.
+
+#table(
+  columns: (1fr, 1.5fr),
+  stroke: 0.35pt + luma(150),
+  inset: 2pt,
+  align: center,
+  [*子句*], [*蕴含边*],
+  [$x_a or x_b$], [$F_a->T_b,F_b->T_a$],
+  [$x_a or ¬x_b$], [$F_a->F_b,T_b->T_a$],
+  [$¬x_a or x_b$], [$T_a->T_b,F_b->F_a$],
+  [$¬x_a or ¬x_b$], [$T_a->F_b,T_b->F_a$],
+)
+
+#theorem[判定与构造][
+  对蕴含图求强连通分量. 若存在 $i$ 使 $T_i,F_i$ 位于同一个 SCC, 则 $x_i$ 与其否定互相蕴含, 原问题无解; 否则一定有解. 在缩点 DAG 中, 对每个变量令拓扑序较靠后的文字成立, 即可得到一组合法赋值. 时间和空间复杂度均为 $O(n+m)$.
+]
+#ps[
+  至少一个为真使用 $x_a or x_b$, 至多一个为真使用 $¬x_a or ¬x_b$; $x_a=x_b$ 同时加入 $x_a or ¬x_b$ 与 $¬x_a or x_b$, $x_a!=x_b$ 同时加入 $x_a or x_b$ 与 $¬x_a or ¬x_b$; 强制文字 $L$ 成立只需连 $¬L->L$. 当前 Tarjan 模板在 SCC 出栈时递增编号, 编号越小越靠近汇点, 因而当 $T_i$ 所在 SCC 的编号小于 $F_i$ 所在 SCC 的编号时令 $x_i=1$.
+]
+
 
 === 边双
 
+#code-info(
+  [`work(n,edge,color)` 对无向图进行边双连通分量染色并返回分量数；一条无向边的两个邻接项须共用同一边号。],
+  [时间 $O(n+m)$，额外空间 $O(n)$，递归栈最深 $O(n)$。],
+)
 #code-file("code/graph/tarjan2.cpp")
 
 === 点双
 
+#code-info(
+  [`work(n,edge,scc)` 枚举简单无向图的点双连通分量，顶点表写入 `scc` 并返回分量数；割点可出现在多个分量中。],
+  [时间 $O(n+m)$；工作空间 $O(n)$，计入输出为 $O(n+m)$。],
+)
 #code-file("code/graph/tarjan3.cpp");
 
 == 生成树
@@ -154,6 +243,10 @@ useless
 
 === Kruskal
 
+#code-info(
+  [`work(n,edge)` 接收 `{u,v,w}` 边集，返回最小生成森林的所选边；仅在图连通时结果为 MST。],
+  [时间 $O(n+m log(n+m))$，因复制并排序边集，额外空间 $O(n+m)$。],
+)
 #code-file("code/graph/kruskal.cpp")
 
 ==== 应用: Kruskal 重构树
@@ -178,6 +271,10 @@ useless
 
 === 可撤销并查集
 
+#code-info(
+  [`DSU(n)`/`dsu_init(n)` 初始化；`find` 查根；`merge` 按大小合并；`undo` 撤销最近一次成功合并；`newnode` 增点。],
+  [初始化 $O(n)$；`find/merge` 最坏 $O(log n)$，`undo` 为 $O(1)$，`newnode` 摊还 $O(1)$；空间 $O(n)$。],
+)
 #code-file("code/graph/undodsu.cpp")
 
 = 网络流 / Flow
@@ -186,10 +283,18 @@ useless
 
 === 网络最大流
 
+#code-info(
+  [`dinic(n,s,t)` 初始化；`addedge(u,v,cap)` 加容量边；`solve()` 返回最大流并保留最终残量网络。],
+  [一般图时间 $O(n^2m)$，空间 $O(n+m)$；要求单次 DFS 的流量上界 `inf` 不小于最大流。],
+)
 #code-file("code/graph/dinic.cpp")
 
 === 最小费用最大流
 
+#code-info(
+  [`ssp(n,s,t)` 初始化；`addedge(u,v,cap,cost)` 加边；`solve()` 返回 `{最大流,最小费用}` 并修改残量网络。],
+  [整数容量下最坏时间 $O(F n m)$（$F$ 为最大流），空间 $O(n+m)$。],
+)
 #code-file("code/graph/mcmf.cpp")
 
 ==== 应用: 最小费用可行流
@@ -216,13 +321,18 @@ $
 
 #h(2em) 设源汇为 $S,T$, 加入下界为 $0$, 上界为 $inf$ 的人工边 $T->S$, 再求无源汇上下界可行流. 若有解, 记人工边的流量为 $f_0$, 它就是当前 $S$ 到 $T$ 的流量. 后续保留当前残量网络, 并删除与 $S',T'$ 相连的边和人工边 $T->S$ 的正反残量边.
 
+
+
 ==== 有源汇上下界最大流
 
-#h(2em) 求出可行流并删除附加边后, 在残量网络中求 $S$ 到 $T$ 的最大流 $Delta f$, 答案为 $f_0+Delta f$.
+#h(2em) 求出可行流并删除附加边后, 在残量网络中求 $S$ 到 $T$ 的最大流 $Delta f$, 则最大流的答案为 $f_0+Delta f$.
+#ps[
+  这里的附加边是指为求可行流临时加入的 $S'->v,v->T'$ 和人工边 $T->S$, 包括它们的反向残量边. 求出可行流后应将这些边全部删除, 只保留原图各边的残量网络. 特别地, 人工边流过 $f_0$ 后会产生容量为 $f_0$ 的反向边 $S->T$; 若不删除, 第二次最大流会把撤销人工边的流量误当成新增流量. 原图边的反向残量边仍用于调整可行流, 不能删除.
+]
 
 ==== 有源汇上下界最小流
 
-#h(2em) 求出可行流并删除附加边后, 在残量网络中求 $T$ 到 $S$ 的最大流 $Delta f$, 答案为 $f_0-Delta f$.
+#h(2em) 求出可行流并删除附加边后, 在残量网络中求 $T$ 到 $S$ 的最大流 $Delta f$, 则最小流的答案为 $f_0-Delta f$.
 
 
 
@@ -235,25 +345,41 @@ $
 
 == 树状数组
 
+#code-info(
+  [`BitTree(n)` 初始化；`add(x,d)` 单点加；`ask(x)` 求前缀和；`find(v)` 在权值非负时求最小的前缀和不小于 $v$ 的位置。],
+  [初始化与空间 $O(n)$；三种操作均为 $O(log n)$ 时间、$O(1)$ 额外空间；当前 `add` 的循环条件会漏掉下标 $n$。],
+)
 #code-file("code/data-structure/bittree.cpp")
 
 == 线段树系列
 
 === 主席树
 
+#code-info(
+  [`modify` 从旧根派生单点加版本并返回新根；`query` 求两版本之差的区间和；`kth` 求版本差中的第 $k$ 小；`clone/val/pushup` 为节点辅助接口。],
+  [设值域大小为 $U$：修改、查询、`kth` 均为 $O(log U)$；每次修改新增 $O(log U)$ 节点，$M$ 次修改后空间 $O(M log U)$。],
+)
 #code-file("code/data-structure/jtree.cpp")
 
 === 可裂&可并线段树
 
+#code-info(
+  [`modify/query/find` 分别完成单点加、区间和、第 $k$ 小；`merge` 破坏性合并；`split` 按 $x$ 拆成值域 $<x$ 与 $>=x$ 两棵树；其余为建点与维护接口。],
+  [值域大小为 $U$ 时，前三者与 `split` 为 $O(log U)$；`merge` 为 $O(min(A_p,A_q))$；已分配 $A$ 个节点时空间 $O(A)$。],
+)
 #code-file("code/data-structure/sgmTree.cpp")
 
 === 线段树二分
 
+#code-info(
+  [`max_right(...,ql,s,v)`/`min_left(...,qr,s,v)` 分别向右/左寻找累计和首次达到 $v$ 的位置，要求区间和具有单调性。],
+  [正确实现时单次时间与递归栈均为 $O(log n)$；当前 `max_right` 的整段判定方向写反，结果与复杂度暂无保证。],
+)
 #code-file("code/data-structure/sgtBisearch.cpp")
 
 === 势能线段树
 
-#h(2em)准确来讲, 势能线段树并不是某种功能实现范式, 而是通过赋予线段树节点势能的方式来证明某些在线段树上的"暴力"操作的时间复杂度是合法的. 以下提供若干势能线段树的例子.
+#h(2em)准确来讲, 势能线段树并不是某种功能实现范式, 而是通过赋予线段树节点势能的方式来证明某些在线段树上的"暴力"操作的时间复杂度是合法的. 以下提供若干势能线段树的例子.\ \ 
 
 #let hr = line(length: 100%)
 
@@ -282,6 +408,10 @@ $
 
 == FHQ_Treap
 
+#code-info(
+  [`split/merge` 按值分裂与合并；`insert/remove` 增删一个值；`rank/kth/pre/nxt` 求排名、第 $k$ 小、严格前驱与后继；`size/clear/reserve` 管理容器。],
+  [除 `size/empty` 为 $O(1)$ 外，核心操作期望 $O(log n)$、最坏 $O(n)$；删除不回收节点，空间按历史最大已分配节点数计。],
+)
 #code-file("code/data-structure/fhqtreap.cpp")
 
 = 数学 / Math
@@ -293,7 +423,7 @@ $
 #definition[
   错排第 $n$ 项 $D_n$ 就是长度为 $n$ 的满足 $P_i!=i$ 的排列 $P$ 的数量.
 ]\ 
-有两种求解错排的方式.
+有两种求解错排的方式.\ \ 
 #theorem[递推][
   $ 
   D_n=cases(
@@ -313,7 +443,7 @@ $
   卡特兰数第 $n$ 项 $C_n$ 就是有 $n$ 对括号的合法括号序列的数量.
 ]\
 
-从其组合定义出发可以获得卡特兰数有若干性质.
+从其组合定义出发可以获得卡特兰数有若干性质.\ \ 
 
 #property[1][
   $ C_n=cases(
@@ -329,7 +459,7 @@ $
   4. 将 $n$ 个 $1$ 和 $-1$ 排成一个前缀和非负的序列的方案数.
 ]\ 
 
-为了更好地计算卡特兰数, 我们考虑引入翻折定理来计数 (2).1 .
+为了更好地计算卡特兰数, 我们考虑引入翻折定理来计数 (2).1 .\ \ 
 #theorem[翻折定理][
   从 $(0,0)$ 出发, 在不经过直线 $y=x+k$ 的前提下, 走到点 $(n,m)$ (要求起点和终点在直线的同一侧)的方案数为
   $
@@ -337,7 +467,7 @@ $
   $
   相当于从 $(0,0)$ 出发不加限制地走到 $(n,m)$ 的方案数减去从 $(0,0)$ 出发不加限制地走到 $(m-k,n+k)$ (终点 $(n,m)$ 关于 $y=x+k$ 的对称点)的方案数.
 ]\
-直接应用到卡特兰数上可以得到.
+直接应用到卡特兰数上可以得到.\ \ 
 #corollary[卡特兰数通项公式][
   $ C_n=binom(2n,n)-binom(2n,n+1) $
 ]
@@ -348,7 +478,7 @@ $
 #definition[
   第一类斯特林数第 $n$ 行第 $k(<=n)$ 列 $stl1(n,k)$ 就是将 $n$ 个两两不同的元素划分为 $k$ 个无编号的非空轮换(圆排列)的方案数.
 ]\
-朴素的求值是通过递推式的方式来求解
+朴素的求值是通过递推式的方式来求解\ \ 
 
 #theorem[递推][
   $ stl1(n,k)=cases(
@@ -386,7 +516,7 @@ $
   stl2(n,m)=sum_(i=0)^m ((-1)^(m-i))/((m-i)!)dot (i^n)/(i!) 
   $
 ]\
-类似于第一类斯特林数, 我们还可以借助多项式乘法来求同一行/同一列的第二类斯特林数的值
+类似于第一类斯特林数, 我们还可以借助多项式乘法来求同一行/同一列的第二类斯特林数的值\ \ 
 
 #theorem[同一行第二类斯特林数][
   对于第 $n$ 行, 令 $ F(x):=sum_i i^n/i! x^n,G(x):=sum_i (-1)^i/i! x^i$ 则对于 $i<=n$ 有 $ stl2(n,i)=[x^i](F(x) dot G(x)) $
@@ -548,9 +678,11 @@ $
 ==== 反常Nim游戏
 
 #problem[
-
+  共有 $n$ 堆石子, 两名玩家轮流从任意一个非空堆中取走任意正数枚石子. 与普通 Nim 不同, 取走最后一枚石子的玩家失败.
 ]#theorem[
-  
+  先手必败当且仅当满足以下一种情况:
+  1. 所有非空堆都只有 $1$ 枚石子, 且非空堆的数量为奇数;
+  2. 至少有一堆石子数大于 $1$, 且 $a_1 plus.o a_2 plus.o ... plus.o a_n=0$.
 ]
 
 ==== Moore's Nim-k 游戏
@@ -671,6 +803,10 @@ $
 
 === Extended GCD
 
+#code-info(
+  [`exgcd(x,y)` 返回 `{g,u,v}`，满足 $g=gcd(x,y)=u x+v y$。],
+  [时间与递归栈空间均为 $O(log min(|x|,|y|))$。],
+)
 #code-file("code/math/exgcd.cpp")
 
 === 欧拉取模定理
@@ -688,20 +824,32 @@ $
 
 === BSGS & exBSGS
 
+#code-info(
+  [`BSGS(a,b,p,k)` 在 $gcd(a,p)=1$ 时求最小的 $x>=0$ 使 $k a^x equiv b mod p$；`exBSGS(a,b,p)` 去除互质限制；无解返回 `-1`。],
+  [哈希表操作按期望 $O(1)$ 计，时间与空间均为 $O(sqrt(p))$。],
+)
 #code-file("code/math/bsgs.cpp")
 
 === CRT & exCRT
 
+#code-info(
+  [`CRT(sym)` 合并两两互质的同余式；`merge(x,y)` 合并两个一般同余式并原地修改 `x`；`exCRT(sym)` 处理非互质模数，无解返回 `-1`。],
+  [设同余式数为 $k$、最终模数为 $M$：时间 $O(k log M)$；参数按值复制及递归栈共占 $O(k+log M)$ 空间。],
+)
 #code-file("code/math/crt.cpp")
 
 === 线性筛素数&积性函数
 
+#code-info(
+  [`work(N,prime,low,f)` 筛出 $[2,N)$ 的素数；`low[x]` 为最小质因子的最高幂，补全质数幂处代码后同时计算积性函数 `f`。],
+  [时间 $O(N)$，输出及辅助空间 $O(N)$。],
+)
 #code-file("code/math/linearSieve.cpp")
 
 === 整除与数论分块
 
 #h(2em) 对于 $n in NN$ , 定义 $ D(n):={lr(floor n/i floor.r):1 <= i <= n} $
-则 $D(n)$ 有如下的性质
+则 $D(n)$ 有如下的性质\ \ 
 #property[1][
 $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 ]
@@ -714,18 +862,25 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 #property[3][
   对于 $m in D(n)$ , 有 $ D(m) subset.eq D(n) $ 
 ]\
-#h(2em) 我们还有若干整除的性质, 包括但不限于
+#h(2em) 我们还有若干整除的性质, 包括但不限于\ \ 
 #property[1][
   对于 $n,x,y in NN$ 有 $ lr(floor lr(floor n/x floor.r)/ y floor.r)=lr(floor n/(x y) floor.r) $
 ]\
-以及上下取整的转化
+以及上下取整的转化\ \ 
 #property[2][
   对于 $n,m in NN$ , 有 $ lr(ceil n/m ceil.r)=lr(floor (n-1)/m floor.r)+1 $
 ]
 
 === 杜教筛
 
+==== 实现
+#code-info(
+  [`DuJiao_sieve(inv_g,S_g,S_fg)` 设置 $g(1)^{-1}$ 及两个前缀和函数；`calc(n,pre)` 记忆化计算 $sum_(i<=n)f(i)$。],
+  [标准取预处理界 $B=Theta(n^(2/3))$ 时，期望时间与总空间均为 $O(n^(2/3))$。],
+)
 #code-file("code/math/Du'sSieve.cpp")
+
+==== 常见的构造列表
 
 === Min_25筛
 
@@ -737,19 +892,35 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 
 === 复数FFT
 
+#code-info(
+  [`cmplx` 提供复数四则所需操作；`fft(f,tag)` 原地执行长度为二次幂的 DFT（`tag=0`）或 IDFT（`tag=1`）。],
+  [长度为 $n$ 时，时间 $O(n log n)$，除输入数组外额外空间 $O(1)$。],
+)
 #code-file("code/math/fft.cpp")
 
 === 取模全家桶
+#code-info(
+  [`poly` 提供长度调整、下标访问、NTT/INTT、加减乘、求逆与求导；`integral()` 预留为积分接口，但当前实现尚未完成。],
+  [加减与求导为 $O(n)$；变换、乘法及求逆为 $O(n log n)$；工作空间 $O(n)$。当前文件因 `integral()` 未完成而不能编译。],
+)
 #code-file("code/math/poly(mod).cpp")
 
 = 杂项
 
 == Millar-Rabin素性测试
 
+#code-info(
+  [`MillerRabin::test(n)` 使用固定七组底数判定 64 位整数 $n$ 是否为质数。],
+  [时间 $O(log n)$，额外空间 $O(1)$；模乘必须使用足够宽的类型以避免乘法溢出。],
+)
 #code-file("code/math/mr.cpp")
 
 == 线性代数类
 
+#code-info(
+  [构造器建立常数矩阵或单位阵；`[]/n()/m()` 访问元素与尺寸；`+,-,*`、`fpow` 完成矩阵运算；`gauss/det/inv` 求消元结果、行列式与逆矩阵。],
+  [$n times k$ 乘 $k times m$ 为 $O(n k m)$；$n times m$ 消元为 $O(n^2 m)$；方阵快速幂 $O(n^3 log t)$，行列式与求逆 $O(n^3)$；空间 $O(n m)$。],
+)
 #code-file("code/math/matrix.cpp")
 
 == matrix-tree定理
@@ -761,7 +932,7 @@ $ &D_(i j):=cases(
   deg(i) &#strong[if] i=j,
   -|E(i,j)| &#strong[otherwise]
 ) $
-则我们有定理
+则我们有定理\ \ 
 #theorem[无向图][
   对于任意的 $1<=i<=n$ , 记将 $D$ 去掉第 $i$ 行第 $i$ 列得到的子矩阵为 $D_((i))$ , 则 $G$ 上的以 $i$ 为根的全体生成树 $tau(G,i)$ 构成的集合满足 $ |tau(G,i)| =det D_((i)) $
 ]
@@ -782,7 +953,7 @@ $
   -|E(i->j)| &#strong[otherwise]
 )
 $
-则可以类似地导出有向图上的矩阵树定理
+则可以类似地导出有向图上的矩阵树定理\ \ 
 #theorem[有向图,根向树][
   对于 $1<=i<=n$ , 设将 $D^"out"$ 去掉第 $i$ 行第 $i$ 列得到的子矩阵为 $D^"out"_((i))$ , 则 $G$ 上的以 $i$ 为根的且所有边都指向根节点的全体生成树构成的集合 $tau^"root" (G,i)$ 满足$ |tau^"root" (G,i)|=det D^"out"_((i)) $
 ]
@@ -794,7 +965,7 @@ $
 
 == Hall定理
 
-#h(2em) 对于一个二分图 $G(A,B,E)$ , 不妨设 $|A|<=|B|$ , 则*Hall定理*可以判定完美匹配是否存在.
+#h(2em) 对于一个二分图 $G(A,B,E)$ , 不妨设 $|A|<=|B|$ , 则*Hall定理*可以判定完美匹配是否存在.\ \ 
 
 #theorem[Hall][
   $G(A,B,E)$ 存在完美匹配当且仅当对于任意的 $X subset.eq A$ 均有 $ |{y in B: exists x in X "s.t." (x,y)in E }|>=|X| $
@@ -812,7 +983,7 @@ $
 #h(1em) (2). 在序列的末尾加入 $x$ 连着唯一的那个点的标号.\
 #h(1em) (3). 将 $x$ 删去, 若树还剩下至少 $3$ 个顶点, 则返回 (1).
 
-这样我们就得到了一个长度为 $n-2$ 的序列, 可以验证这个映射是双射. 借助这个双射我们可以得到若干结果
+这样我们就得到了一个长度为 $n-2$ 的序列, 可以验证这个映射是双射. 借助这个双射我们可以得到若干结果.\ \ 
 
 #theorem[Cayley公式][
   完全图(有标号) $K_n$ 的生成树数量为 $ n^(n-2) $
@@ -822,10 +993,18 @@ $
 ]
 == 虚树
 
+#code-info(
+  [`VirtualTree(DFN,DEP,lca,root)` 保存原树信息；`work(Nd,tree,lnk)` 建立重新编号的虚树，返回点数，`lnk` 映射回原树。],
+  [关键点数为 $k$、单次 LCA 为 $L$ 时，构造对象 $O(n)$，单次建树 $O(k log k+k L)$；对象空间 $O(n)$、单次输出空间 $O(k)$。],
+)
 #code-file("code/graph/virtualtree.cpp")
 
 == 拉格朗日插值
 
+#code-info(
+  [`insert(x,y)` 加入采样点并返回新增/重复/冲突状态；`find(u)` 求插值多项式在 $u$ 处的值；`fast_construct(l,y)` 快速建立连续横坐标采样点。],
+  [已有 $k$ 个点、模数为 $p$ 时，插入 $O(k)$、单点求值 $O(k log p)$、连续点构造 $O(k)$；存储空间 $O(k)$。],
+)
 #code-file("code/math/lagrange.cpp")
 
 == LGV引理
@@ -836,11 +1015,29 @@ $
 
 == 高位前缀和/差分
 
+#code-info(
+  [`sum_of_subset(n,f,sum)` 求所有子集和；`diff_of_subset(n,f,diff)` 对其进行 Möbius 逆变换。],
+  [时间 $O(n 2^n)$，输出空间 $O(2^n)$，除此之外额外空间 $O(1)$。],
+)
 #code-file("code/math/sum&diff.cpp")
 
 == FWT & FMT
 
-去问王君睿.
+== 三元环计数
+
+#definition[三元环][
+  在简单无向图 $G=(V,E)$ 中, 若三个不同的点 $u,v,w$ 两两相连, 则无序三元组 $(u,v,w)$ 构成一个三元环. 三元环计数即求图中不同三元环的数量.
+]\
+#h(2em) 先给每条边定向: 从度数较小的点指向度数较大的点; 度数相同时, 从编号较小的点指向编号较大的点. 点的度数与编号按字典序严格增大, 因此定向后的图是一张 DAG. 随后执行:
+
+1. 枚举每条有向边 $u->v$.
+2. 枚举 $v$ 的每条出边 $v->w$.
+3. 若原图中存在边 $(u,w)$, 就找到一个三元环并将答案加 $1$.\ \ 
+
+#theorem[正确性与复杂度][
+  一个三元环的三个点按上述顺序排列后, 边的方向必为 $u->v,u->w,v->w$, 因此它恰好会被统计一次. 对任意点 $v$, 若 $d_v<=sqrt(m)$, 则其出度显然不超过 $sqrt(m)$; 否则它只能指向度数同样大于 $sqrt(m)$ 的点, 而这样的点至多有 $O(sqrt(m))$ 个. 所以每条边之后至多继续枚举 $O(sqrt(m))$ 条边, 总时间复杂度为 $O(m sqrt(m))$.
+]
+
 
 == 四边形不等式优化
 

@@ -33,11 +33,11 @@
   short-title: "XCPC Codebook",
   school: "Your University",
   team: "Your Team",
-  members: ("Member A", "Member B", "Member C"),
+  author: "Your Name",
   updated: datetime.today().display("[year]-[month]-[day]"),
   body,
 ) = {
-  set document(title: title, author: members)
+  set document(title: title, author: author)
   set text(
     font: (
       (name: "Libertinus Serif", covers: "latin-in-cjk"),
@@ -66,8 +66,6 @@
     above: 1pt,
     below: 3pt,
   )
-  show raw.line: it => code-line(it)
-
   let running-header = context {
     stack(
       spacing: 1pt,
@@ -116,8 +114,8 @@
           #text(size: 9pt, weight: "bold")[Team]\
           #text(size: 13pt)[#team]
           #v(6mm)
-          #text(size: 9pt, weight: "bold")[Members]\
-          #text(size: 10pt)[#members.join(" / ")]
+          #text(size: 9pt, weight: "bold")[Author]\
+          #text(size: 10pt)[#author]
         ]
       ]
       #v(1fr)
