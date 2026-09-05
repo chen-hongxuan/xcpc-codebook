@@ -1,7 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-#define VI vector<int>
-const int inf=1e18;
 namespace spfa{
   int work(int n,VI &s,vector<vector<array<int,2>>> &edge,VI &dis){
     queue<int> q;

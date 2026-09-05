@@ -87,16 +87,16 @@
 === 哈希类(三哈希)
 
 #code-info(
-  [`HASH(x)`/`HASH(x,y,z)` 构造三元哈希；`[]` 访问分量；`+=,-=,*=` 及对应二元运算逐模计算；比较运算比较三元组。],
-  [模数个数固定为 $3$，所有接口的时间与额外空间均为 $O(1)$。],
+  [`HASH(x)`/`HASH(x,y,z)` 构造三元哈希；`[]` 访问分量；`+=,-=,*=` 及对应二元运算逐模计算；`==,!=,<` 比较三元组。使用前须替换 `MOD` 与 `BASE`，并保证构造值、`BASE` 及经 `[]` 写入的值均在对应的 `[0,MOD)` 内。],
+  [模数个数固定为 $3$，所有接口的时间与额外空间均为 $O(1)$；乘法中间积须能由 `long long` 表示。],
 )
 #code-file("code/string/hash.cpp")
 
 === AC自动机
 
 #code-info(
-  [`init()` 清空；`insert(str)` 插入小写模式串并返回终点；`construct()` 构造 fail 指针并补全转移。],
-  [设模式总长为 $L$、状态数为 $P$：插入总计 $O(L)$，构造 $O(P)$，空间 $O(P)$；当前 `cnt` 未给根节点预留位置，`insert` 会越界。],
+  [`init()` 清空；`insert(str)` 插入小写模式串并返回终点；`construct()` 构造 fail 指针并补全转移；`cnt[p]` 记录以 $p$ 结尾的模式串数。须依次执行 `init()`、若干次 `insert()`、一次 `construct()`，重新构建前再次初始化。],
+  [设模式总长为 $L$、状态数为 $P$：插入总计 $O(L)$，构造 $O(P)$，空间 $O(P)$。],
 )
 #code-file("code/string/acam.cpp")
 
@@ -123,8 +123,8 @@ STO$PP$ LE$AA$RNING USELESS ALGORITH$MM$!
 === 后缀排序
 
 #code-info(
-  [`work(s,sa,opt)` 将第 $i$ 小后缀的起点写入 `sa[i]`；`opt=0` 仅返回最终排名，`opt=1` 返回各倍增长度的排名数组。],
-  [时间 $O(n log^2 n)$；`opt=0` 空间 $O(n)$，`opt=1` 空间 $O(n log n)$。],
+  [`work(s,sa,opt)` 将第 $i$ 小后缀的起点写入 `sa[i]`；`opt=0` 时 `rk[0]` 为最终后缀排名，`opt!=0` 时 `rk[i][j]` 为从 $j$ 开始、长度至多 $2^i$ 的前缀排名，越过串尾处补最小哨兵。要求字符串仅含小写字母。],
+  [时间 $O(n log^2 n)$；`opt=0` 空间 $O(n)$，`opt!=0` 空间 $O(n log n)$。],
 )
 #code-file("code/string/sa.cpp")
 
@@ -137,16 +137,16 @@ STO$PP$ LE$AA$RNING USELESS ALGORITH$MM$!
 === Dijkstra
 
 #code-info(
-  [`work(n,s,edge,dis)` 在非负权图上求多源最短路，源点集为 `s`，结果写入 `dis`。],
-  [时间 $O((n+m)log n)$，空间 $O(n+m)$。],
+  [`work(n,s,edge,dis)` 在非负权图上求多源最短路，源点集为 `s`，`edge[u]` 的元素为 `{v,w}`，结果写入 `dis`。],
+  [时间 $O((n+m)log n)$，空间 $O(n+m)$；不可达哨兵 `inf` 须大于所有有限最短路。],
 )
 #code-file("code/graph/dijkstra.cpp")
 
 === SPFA
 
 #code-info(
-  [`work(n,s,edge,dis)` 求多源最短路并写入 `dis`；返回 `1` 表示存在从源集可达的负环，否则返回 `0`。],
-  [最坏时间 $O(n m)$，额外空间 $O(n)$。],
+  [`work(n,s,edge,dis)` 求多源最短路；返回 `1` 表示存在从源集可达的负环，否则返回 `0`。存在负环时，`dis` 只是中途状态。],
+  [最坏时间 $O(n m)$，空间 $O(n+m)$；不可达哨兵 `inf` 须大于所有有限最短路。],
 )
 #code-file("code/graph/spfa.cpp")
 
@@ -215,7 +215,7 @@ useless
 === 边双
 
 #code-info(
-  [`work(n,edge,color)` 对无向图进行边双连通分量染色并返回分量数；一条无向边的两个邻接项须共用同一边号。],
+  [`work(n,edge,color)` 对无向图进行边双连通分量染色并返回分量数；同一条无向边的两个方向须共用边号，不同边的编号须不同。],
   [时间 $O(n+m)$，额外空间 $O(n)$，递归栈最深 $O(n)$。],
 )
 #code-file("code/graph/tarjan2.cpp")
@@ -244,8 +244,8 @@ useless
 === Kruskal
 
 #code-info(
-  [`work(n,edge)` 接收 `{u,v,w}` 边集，返回最小生成森林的所选边；仅在图连通时结果为 MST。],
-  [时间 $O(n+m log(n+m))$，因复制并排序边集，额外空间 $O(n+m)$。],
+  [`work(n,edge)` 接收 `{u,v,w}` 边集，返回最小生成森林的所选边；参数按值传递，排序不会改变原边集。],
+  [时间 $O(n+m log m)$，额外空间 $O(n+m)$；仅在原图连通时结果为最小生成树。],
 )
 #code-file("code/graph/kruskal.cpp")
 
@@ -272,7 +272,7 @@ useless
 === 可撤销并查集
 
 #code-info(
-  [`DSU(n)`/`dsu_init(n)` 初始化；`find` 查根；`merge` 按大小合并；`undo` 撤销最近一次成功合并；`newnode` 增点。],
+  [`DSU(n)`/`dsu_init(n)` 初始化；`find(x)` 查根；`merge(x,y)` 按大小合并并返回是否成功；`undo()` 撤销最近一次成功合并；`newnode()` 增点。],
   [初始化 $O(n)$；`find/merge` 最坏 $O(log n)$，`undo` 为 $O(1)$，`newnode` 摊还 $O(1)$；空间 $O(n)$。],
 )
 #code-file("code/graph/undodsu.cpp")
@@ -284,16 +284,16 @@ useless
 === 网络最大流
 
 #code-info(
-  [`dinic(n,s,t)` 初始化；`addedge(u,v,cap)` 加容量边；`solve()` 返回最大流并保留最终残量网络。],
-  [一般图时间 $O(n^2m)$，空间 $O(n+m)$；要求单次 DFS 的流量上界 `inf` 不小于最大流。],
+  [`dinic(n,s,t)`/`dinic_init(n,s,t)` 初始化；`addedge(u,v,cap)` 加有向容量边；`solve()` 返回最大流并保留残量网络。],
+  [一般图时间 $O(n^2m)$，空间 $O(n+m)$；容量须非负，为保持上述复杂度应使 `inf` 不小于最大流。],
 )
 #code-file("code/graph/dinic.cpp")
 
 === 最小费用最大流
 
 #code-info(
-  [`ssp(n,s,t)` 初始化；`addedge(u,v,cap,cost)` 加边；`solve()` 返回 `{最大流,最小费用}` 并修改残量网络。],
-  [整数容量下最坏时间 $O(F n m)$（$F$ 为最大流），空间 $O(n+m)$。],
+  [`ssp(n,s,t)`/`ssp_init(n,s,t)` 初始化；`addedge(u,v,cap,cost)` 加有向容量边及单位费用；`solve()` 返回 `{最大流,最小费用}` 并保留残量网络。],
+  [整数容量下最坏时间 $O(F n m)$（$F$ 为最大流），空间 $O(n+m)$；容量须非负，残量网络不得含可达负费用环，最短路、总流量及总费用均不得越界。],
 )
 #code-file("code/graph/mcmf.cpp")
 
@@ -346,8 +346,8 @@ $
 == 树状数组
 
 #code-info(
-  [`BitTree(n)` 初始化；`add(x,d)` 单点加；`ask(x)` 求前缀和；`find(v)` 在权值非负时求最小的前缀和不小于 $v$ 的位置。],
-  [初始化与空间 $O(n)$；三种操作均为 $O(log n)$ 时间、$O(1)$ 额外空间；当前 `add` 的循环条件会漏掉下标 $n$。],
+  [`BitTree(n)` 初始化下标 $1$ 到 $n$；`add(x,t)` 单点加；`ask(x)` 求前缀和；`find(v)` 求最小的满足前缀和不小于 $v$ 的位置。要求 $n>0$、更新下标合法且各点权非负；$v<=0$ 时返回 $0$，不存在时返回 $n+1$。],
+  [初始化与空间 $O(n)$；三种操作均为 $O(log n)$ 时间、$O(1)$ 额外空间。],
 )
 #code-file("code/data-structure/bittree.cpp")
 
@@ -356,16 +356,16 @@ $
 === 主席树
 
 #code-info(
-  [`modify` 从旧根派生单点加版本并返回新根；`query` 求两版本之差的区间和；`kth` 求版本差中的第 $k$ 小；`clone/val/pushup` 为节点辅助接口。],
-  [设值域大小为 $U$：修改、查询、`kth` 均为 $O(log U)$；每次修改新增 $O(log U)$ 节点，$M$ 次修改后空间 $O(M log U)$。],
+  [`ChairmanTree()` 建立空版本 `root[0]=0`；`modify(p,l,r,x,d)` 从旧根派生单点加版本并返回新根，返回值须由调用者保存；`query(p,q,...)` 求版本 $p-q$ 的区间和；`kth(p,q,...)` 求版本差中的第 $k$ 小。],
+  [设值域大小为 $U$：修改、查询、`kth` 均为 $O(log U)$；每次修改新增 $O(log U)$ 节点，$M$ 次修改后空间 $O(M log U)$。`kth` 要求版本差为非负频数，且 $1<=k$、`k<=val(p,q)`。],
 )
 #code-file("code/data-structure/jtree.cpp")
 
 === 可裂&可并线段树
 
 #code-info(
-  [`modify/query/find` 分别完成单点加、区间和、第 $k$ 小；`merge` 破坏性合并；`split` 按 $x$ 拆成值域 $<x$ 与 $>=x$ 两棵树；其余为建点与维护接口。],
-  [值域大小为 $U$ 时，前三者与 `split` 为 $O(log U)$；`merge` 为 $O(min(A_p,A_q))$；已分配 $A$ 个节点时空间 $O(A)$。],
+  [`segmenttree2(L,R,n)` 设置值域并预留节点，树根由外部以整数维护且初值为 $0$；`modify/query/find` 分别完成单点加、区间和、第 $k$ 小；`merge(p,q)` 将 $q$ 破坏性合入 $p$；`split(p,q,x)` 使 $q$ 保留值域 $<x$ 的部分，$p$ 得到 $>=x$ 的部分。],
+  [值域大小为 $U$ 时，修改、查询、`find` 与 `split` 为 $O(log U)$；`merge` 为 $O(min(A_p,A_q))$；空间按历史分配节点数计算。第 $k$ 小要求节点权值非负。],
 )
 #code-file("code/data-structure/sgmTree.cpp")
 
@@ -409,8 +409,8 @@ $
 == FHQ_Treap
 
 #code-info(
-  [`split/merge` 按值分裂与合并；`insert/remove` 增删一个值；`rank/kth/pre/nxt` 求排名、第 $k$ 小、严格前驱与后继；`size/clear/reserve` 管理容器。],
-  [除 `size/empty` 为 $O(1)$ 外，核心操作期望 $O(log n)$、最坏 $O(n)$；删除不回收节点，空间按历史最大已分配节点数计。],
+  [`split(...,opt=0)` 按 `<d` 与 `>=d` 分裂，`opt!=0` 按 `<=d` 与 `>d` 分裂；`merge` 合并有序树；`insert/remove` 增加或删除一个值；`rank/kth/pre/nxt` 求排名、第 $k$ 小、严格前驱与后继。],
+  [除 `size/empty` 为 $O(1)$ 外，核心操作期望 $O(log n)$、最坏 $O(n)$；`merge` 要求左树所有值不大于右树，`kth/pre/nxt` 要求答案存在；删除不回收节点。],
 )
 #code-file("code/data-structure/fhqtreap.cpp")
 
@@ -561,6 +561,29 @@ $
 ]
 
 === 十二重计数
+
+#definition[][
+  将 $n$ 个球放入 $m$ 个盒, 每个球恰好进入一个盒. 分别考虑球与盒是否有标号, 以及盒可空且容量不限、每盒至多一球、每盒至少一球三种限制, 共得到十二类计数问题.
+]
+
+#text(size: 6pt)[
+  #table(
+    columns: (1.05fr, 1.45fr, 1.1fr, 1.25fr),
+    stroke: 0.35pt + luma(150),
+    inset: 1.2pt,
+    align: center,
+    [*球 / 盒*], [*可空且不限容量*], [*至多一球*], [*盒非空*],
+    [有标号 / 有标号], [$m^n$], [$m^underline(n)$], [$m! stl2(n,m)$],
+    [无标号 / 有标号], [$binom(n+m-1,m-1)$], [$binom(m,n)$], [$binom(n-1,m-1)$],
+    [有标号 / 无标号], [$sum_(k=0)^m stl2(n,k)$], [$I(n <= m)$], [$stl2(n,m)$],
+    [无标号 / 无标号], [$sum_(k=0)^m p_k(n)$], [$I(n <= m)$], [$p_m(n)$],
+  )
+]
+
+#ps[
+  其中 $p_k(n)$ 表示将整数 $n$ 分拆为恰好 $k$ 个正整数之和的方案数; $I(P)$ 在命题 $P$ 成立时为 $1$, 否则为 $0$. 约定不可行情形的组合数、斯特林数和分拆数均为 $0$.
+]
+
 
 === 容斥原理
 
@@ -804,7 +827,7 @@ $
 === Extended GCD
 
 #code-info(
-  [`exgcd(x,y)` 返回 `{g,u,v}`，满足 $g=gcd(x,y)=u x+v y$。],
+  [`exgcd(x,y)` 对非负整数返回 `{g,u,v}`，满足 $g=gcd(x,y)=u x+v y$。],
   [时间与递归栈空间均为 $O(log min(|x|,|y|))$。],
 )
 #code-file("code/math/exgcd.cpp")
@@ -825,7 +848,7 @@ $
 === BSGS & exBSGS
 
 #code-info(
-  [`BSGS(a,b,p,k)` 在 $gcd(a,p)=1$ 时求最小的 $x>=0$ 使 $k a^x equiv b mod p$；`exBSGS(a,b,p)` 去除互质限制；无解返回 `-1`。],
+  [`norm(x,p)` 将 $x$ 归一化到 $[0,p)$；`BSGS(a,b,p,k)` 在 $gcd(a,p)=1$ 时求最小的 $x>=0$ 使 $k a^x equiv b mod p$；`exBSGS(a,b,p)` 去除互质限制；无解返回 `-1`。要求 $p>0$，且当前乘法实现要求参数均在 32 位整数范围内。],
   [哈希表操作按期望 $O(1)$ 计，时间与空间均为 $O(sqrt(p))$。],
 )
 #code-file("code/math/bsgs.cpp")
@@ -833,7 +856,7 @@ $
 === CRT & exCRT
 
 #code-info(
-  [`CRT(sym)` 合并两两互质的同余式；`merge(x,y)` 合并两个一般同余式并原地修改 `x`；`exCRT(sym)` 处理非互质模数，无解返回 `-1`。],
+  [`sym` 的每项 `{a,m}` 表示 $x equiv a mod m$；`CRT(sym)` 合并模数两两互质的同余式；`merge(x,y)` 合并两个一般同余式，成功返回 $0$ 并修改 `x`；`exCRT(sym)` 处理非互质模数，无解返回 `-1`。模数须为正，最终模数及所有乘法中间量须能由 `long long` 表示。],
   [设同余式数为 $k$、最终模数为 $M$：时间 $O(k log M)$；参数按值复制及递归栈共占 $O(k+log M)$ 空间。],
 )
 #code-file("code/math/crt.cpp")
@@ -841,7 +864,7 @@ $
 === 线性筛素数&积性函数
 
 #code-info(
-  [`work(N,prime,low,f)` 筛出 $[2,N)$ 的素数；`low[x]` 为最小质因子的最高幂，补全质数幂处代码后同时计算积性函数 `f`。],
+  [`work(N,prime,low,f)` 筛出 $[2,N)$ 内的素数；`low[x]` 为 $x$ 中最小质因子的最高次幂。要求 $N>=2$，并先在注释处补全质数幂的 `f[p^k]`。],
   [时间 $O(N)$，输出及辅助空间 $O(N)$。],
 )
 #code-file("code/math/linearSieve.cpp")
@@ -875,8 +898,8 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 
 ==== 实现
 #code-info(
-  [`DuJiao_sieve(inv_g,S_g,S_fg)` 设置 $g(1)^{-1}$ 及两个前缀和函数；`calc(n,pre)` 记忆化计算 $sum_(i<=n)f(i)$。],
-  [标准取预处理界 $B=Theta(n^(2/3))$ 时，期望时间与总空间均为 $O(n^(2/3))$。],
+  [`DuJiao_sieve(inv_g,S_g,S_fg)` 设置 $g(1)^(-1)$、$S_g(n)=sum_(i<=n)g(i)$ 与 $S_(f*g)(n)=sum_(i<=n)(f*g)(i)$；`calc(n,pre)` 根据 `pre[x]` 记忆化求 $sum_(i<=n)f(i)$。同一对象只能用于同一组函数和前缀和。],
+  [预处理界取 $B=Theta(n^(2/3))$ 时，期望时间与总空间均为 $O(n^(2/3))$；回调值、前缀和及 $g(1)^(-1)$ 均须先取模。],
 )
 #code-file("code/math/Du'sSieve.cpp")
 
@@ -907,19 +930,19 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 
 = 杂项
 
-== Millar-Rabin素性测试
+== Miller–Rabin 素性测试
 
 #code-info(
-  [`MillerRabin::test(n)` 使用固定七组底数判定 64 位整数 $n$ 是否为质数。],
-  [时间 $O(log n)$，额外空间 $O(1)$；模乘必须使用足够宽的类型以避免乘法溢出。],
+  [`MillerRabin::test(n)` 使用固定七组底数判定 `long long` 范围内的非负整数 $n$ 是否为质数，质数返回 $1$，否则返回 $0$。],
+  [时间 $O(log n)$，额外空间 $O(1)$；代码已使用 `__int128` 完成安全模乘。],
 )
 #code-file("code/math/mr.cpp")
 
 == 线性代数类
 
 #code-info(
-  [构造器建立常数矩阵或单位阵；`[]/n()/m()` 访问元素与尺寸；`+,-,*`、`fpow` 完成矩阵运算；`gauss/det/inv` 求消元结果、行列式与逆矩阵。],
-  [$n times k$ 乘 $k times m$ 为 $O(n k m)$；$n times m$ 消元为 $O(n^2 m)$；方阵快速幂 $O(n^3 log t)$，行列式与求逆 $O(n^3)$；空间 $O(n m)$。],
+  [`matrix()` 建立空哨兵；`matrix(n,m,v)` 建立常数矩阵；`matrix(n)` 建立单位阵；`[]/n()/m()` 访问元素与尺寸；`+,-,*`、`fpow` 完成运算；`gauss/det/inv` 求消元结果、行列式与逆矩阵。须将 `_P_` 换成质数，保证元素在 `[0,mo)`，消元矩阵满足 $0<n<=m$，快速幂指数非负。],
+  [访问为 $O(1)$，加减为 $O(n m)$；$n times k$ 乘 $k times m$ 为 $O(n k m)$；$n times m$ 消元为 $O(n^2 m)$；方阵快速幂 $O(n^3 log t)$，行列式与求逆 $O(n^3)$；空间 $O(n m)$。],
 )
 #code-file("code/math/matrix.cpp")
 
@@ -994,15 +1017,15 @@ $
 == 虚树
 
 #code-info(
-  [`VirtualTree(DFN,DEP,lca,root)` 保存原树信息；`work(Nd,tree,lnk)` 建立重新编号的虚树，返回点数，`lnk` 映射回原树。],
-  [关键点数为 $k$、单次 LCA 为 $L$ 时，构造对象 $O(n)$，单次建树 $O(k log k+k L)$；对象空间 $O(n)$、单次输出空间 $O(k)$。],
+  [`VirtualTree(DFN,DEP,lca,root)` 保存同一棵有根树的信息；`work(Nd,tree,lnk)` 建立虚树并返回点数，其中 `tree[u]` 记录虚树儿子，`lnk[u]` 映射回原树，虚树根编号为 $1$。要求关键点互异且均在 `root` 子树内；`Nd` 按值传入，原顺序不变。],
+  [设关键点数为 $k$、单次 LCA 为 $L$，初始化时间和空间 $O(n)$；单次建树 $O(k log k+k L)$，输出空间 $O(k)$。],
 )
 #code-file("code/graph/virtualtree.cpp")
 
 == 拉格朗日插值
 
 #code-info(
-  [`insert(x,y)` 加入采样点并返回新增/重复/冲突状态；`find(u)` 求插值多项式在 $u$ 处的值；`fast_construct(l,y)` 快速建立连续横坐标采样点。],
+  [`insert(x,y)` 加入采样点，返回 $1/0/-1$ 分别表示新增、完全重复、同横坐标取值冲突；`find(u)` 求插值多项式在 $u$ 处的值并自动归一化 $u$；`fast_construct(l,y)` 建立横坐标为 $l,l+1,dots$ 的采样点。须将 `_P_` 换成质数，保证存入的坐标在 `[0,mo)` 且横坐标模意义下互异。],
   [已有 $k$ 个点、模数为 $p$ 时，插入 $O(k)$、单点求值 $O(k log p)$、连续点构造 $O(k)$；存储空间 $O(k)$。],
 )
 #code-file("code/math/lagrange.cpp")
@@ -1016,7 +1039,7 @@ $
 == 高位前缀和/差分
 
 #code-info(
-  [`sum_of_subset(n,f,sum)` 求所有子集和；`diff_of_subset(n,f,diff)` 对其进行 Möbius 逆变换。],
+  [`sum_of_subset(n,f,sum)` 求每个集合的所有子集权值和；`diff_of_subset(n,f,diff)` 执行其 Möbius 逆变换。要求 `f` 按二进制集合编号并至少含 $2^n$ 项；当前 `1<<n` 的写法要求 $0<=n<31$。],
   [时间 $O(n 2^n)$，输出空间 $O(2^n)$，除此之外额外空间 $O(1)$。],
 )
 #code-file("code/math/sum&diff.cpp")

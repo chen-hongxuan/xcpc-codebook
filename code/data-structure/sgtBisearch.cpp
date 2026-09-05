@@ -7,7 +7,7 @@ struct segmenttree1{
     vector<node> tr;
     int max_right(int p,int l,int r,int ql,int &s,int v){
         if(r<ql)return -1;
-        if(l<=ql){
+        if(ql<=l){
             int tmp=s+tr[p].val;
             if(tmp<v){
                 s=tmp;

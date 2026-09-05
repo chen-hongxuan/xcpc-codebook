@@ -10,7 +10,7 @@ namespace crt{
     for(auto [a,r]:sym){
       int m=n/r;
       auto [g,b,y]=exgcd(m,r);
-      ret=(ret+a*m*b%n)%n;
+      ret=(ret+a*m%n*b%n)%n;
     }
     return (ret+n)%n;
   }

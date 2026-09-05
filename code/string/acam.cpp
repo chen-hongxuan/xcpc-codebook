@@ -3,7 +3,7 @@ struct ACAutomaton{
   VI fail,cnt;
   int pool;
   void init(){
-    fail=cnt={};
+    fail=cnt={0};
     trie={{}};
     pool=1;
   }

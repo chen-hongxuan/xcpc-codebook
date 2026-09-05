@@ -3,7 +3,7 @@ struct HASH{
   inline static constexpr array<ll,3> MOD{_P1_,_P2_,_P3_};
   array<ll,3> value{};
   static ll norm(ll x,ll mod){x%=mod;return x<0?x+mod:x;}
-  HASH(ll x=0):value({x,x,x}){}
+  HASH(ll x=0):value({x,x,x}){}//构造的时候确保x不要超过模数
   HASH(ll x,ll y,ll z):value({x,y,z}){}
   ll& operator[](int i){return value[i];}
   const ll& operator[](int i)const{return value[i];}
@@ -42,4 +42,4 @@ struct HASH{
   friend HASH operator-(HASH x,const HASH& y){return x-=y;}
   friend HASH operator*(HASH x,const HASH& y){return x*=y;}
 };
-const HASH BASE{_BASE1_,BASE2_,BASE3_};
+const HASH BASE{_BASE1_,_BASE2_,_BASE3_};

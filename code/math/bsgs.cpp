@@ -1,5 +1,10 @@
 namespace bsgs{
+  //在开long long的前提下请确保a,b,p都是int范围内的
+  inline void norm(int &x,int p){
+    x=(x%p+p)%p;
+  }
   int BSGS(int a,int b,int p,int k=1){
+    norm(a,p),norm(b,p),norm(k,p);
     if(p==1||b==k)return 0;
     unordered_map<int,int>umap={};
     int m=ceil(sqrt(p))+5,R=1,ans=-1;
@@ -15,6 +20,7 @@ namespace bsgs{
     return ans;
   }
   int exBSGS(int a,int b,int p){
+    norm(a,p),norm(b,p);
     if(p==1)return 0;
     int k=1,cnt=0,g;
     while((g=__gcd(a,p))>1){

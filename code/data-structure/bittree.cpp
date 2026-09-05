@@ -3,8 +3,8 @@ struct BitTree{
   int n;
   BitTree(int n=0):s(VI(n+3,0)),n(n){}
   void add(int x,int t){
-    if(x>n)return;
-    for(;x<n;x+=x&-x)s[x]+=t;
+    if(x>n||!x)return;
+    for(;x<=n;x+=x&-x)s[x]+=t;
   }
   int ask(int x){
     if(x<=0)return 0;

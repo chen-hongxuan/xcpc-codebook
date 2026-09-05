@@ -22,6 +22,7 @@ struct Lagrange{
   }
   int find(int u){
     int sum=1,ret=0;
+    u=(u%mo+mo)%mo;
     for(auto [x,y,p]:node){
       if(x==u)return y;
       sum=sum*(u+mo-x)%mo;
