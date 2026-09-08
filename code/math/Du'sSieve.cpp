@@ -7,7 +7,7 @@ struct DuJiao_sieve{
     umap={{-1,inv_g}};
     S_g=f,S_fg=g;
   }
-  int calc(int n,VI &pre){
+  int solve(int n,VI &pre){
     if(umap.count(n))return umap[n];
     if(n<pre.size()){
       return umap[n]=pre[n];
@@ -16,7 +16,7 @@ struct DuJiao_sieve{
       for(int i=2,j;i<=n;i=j+1){
         j=n/(n/i);
         int tmp=(S_g(j)+mo-S_g(i-1))%mo;
-        ret=(ret-calc(n/i,pre)*tmp)%mo;
+        ret=(ret-solve(n/i,pre)*tmp)%mo;
       }
       if(ret<0)ret+=mo;
       return umap[n]=ret*umap[-1]%mo;

@@ -11,8 +11,10 @@ inline int read(){
   for(;isdigit(ch);ch=getchar())x=x*10+(ch^48);
   return f?x:-x;
 }
-template<typename T>inline void chmin(T &x,T y){x>y?x=y:y;}
-template<typename T>inline void chmax(T &x,T y){x<y?x=y:y;}
+template<class T>
+inline void chmin(T &x,T y){x>y?x=y:y;}
+template<class T>
+inline void chmax(T &x,T y){x<y?x=y:y;}
 
 const int mo=998244353,inf=1e15;
 const double pi=acos(-1);
