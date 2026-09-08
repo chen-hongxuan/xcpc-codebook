@@ -2,7 +2,7 @@
 
 = 杂项
 
-== Miller–Rabin 素性测试
+== Miller-Rabin 素性测试
 
 #code-info(
   [`MillerRabin::test(n)` 使用固定七组底数判定 `long long` 范围内的非负整数 $n$ 是否为质数, 质数返回 $1$ , 否则返回 $0$ . ],
@@ -12,11 +12,7 @@
 
 == 线性代数类
 
-#code-info(
-  [`matrix()` 建立空哨兵; `matrix(n,m,v)` 建立常数矩阵; `matrix(n)` 建立单位阵; `[]/n()/m()` 访问元素与尺寸; `+,-,*`、`fpow` 完成运算; `gauss/det/inv` 求消元结果、行列式与逆矩阵. 须将 `_P_` 换成质数, 保证元素在 `[0,mo)`, 消元矩阵满足 $0<n<=m$ , 快速幂指数非负. ],
-  [访问为 $O(1)$ , 加减为 $O(n m)$ ; $n times k$ 乘 $k times m$ 为 $O(n k m)$ ; $n times m$ 消元为 $O(n^2 m)$ ; 方阵快速幂 $O(n^3 log t)$ , 行列式与求逆 $O(n^3)$ ; 空间 $O(n m)$ . ],
-)
-#code-file("code/math/matrix.cpp")
+#include "../code/matrix/matrix.typ"
 
 == matrix-tree定理
 

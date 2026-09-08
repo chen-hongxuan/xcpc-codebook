@@ -395,20 +395,52 @@
 ==== Dirichlet卷积与积性函数
 
 #definition[Dirichlet卷积][
-  对于数论函数 $f,g:NN->NN$ , 定义他们的Dirichlet卷积
+  设 $R$ 为含幺交换环. 对于数论函数 $f,g:NN^+->R$ , 定义它们的Dirichlet卷积
   $
-  f*g:&NN->NN\ &n mapsto sum_(d|n)f(d)dot g(n/d)
+  f*g:&NN^+->R\ &n mapsto sum_(d|n)f(d)dot g(n/d)
   $
 ]\ 
 #definition[积性函数][
-  称一个数论函数 $f:NN->NN$ 是积性函数当且仅当对于 $n,m in NN$ , 若 $gcd(n,m)=1$ 则 $f(n)dot f(m)=f(n dot m)$ 成立.
+  称一个数论函数 $f:NN^+->R$ 是积性函数, 当且仅当 $f(1)=1_R$ , 且对于 $n,m in NN^+$ , 若 $gcd(n,m)=1$ 则 $f(n)dot f(m)=f(n dot m)$ 成立.
 ]\
 #definition[完全积性函数][
-  称一个数论函数 $f:NN->NN$ 是完全积性函数当且仅当对于任意的 $n,m in NN$ , 均有 $f(n)dot f(m)=f(n dot m)$ 成立.
+  称一个数论函数 $f:NN^+->R$ 是完全积性函数, 当且仅当 $f(1)=1_R$ , 且对于任意的 $n,m in NN^+$ , 均有 $f(n)dot f(m)=f(n dot m)$ 成立.
 ]\
-#h(2em) 根据积性函数的定义, 我们可以把每个积性函数一一对应为一个 $PP times NN -> NN$ 的函数. 这本质的原因是每个数的素因子分解是唯一的, 对于积性函数 $f$ 以及自然数 $n$ 而言, 假定 $n$ 的质因子分解为$ n=p_1^(a_1)times p_2^(a_2)times ...times p_k^(a_k) $ 那么可以直接得到 $ f(n)=f(p_1^(a_1))times f(p_2^(a_2))times ... times f(p_k^(a_k)) $ 因此我们只需要为每个 $p in PP$ 以及 $n in NN$ 指派 $f(p^n)$ 的值即可.
+#h(2em) 根据积性函数的定义, 我们可以把每个积性函数一一对应为一组素数幂上的取值. 这本质的原因是每个数的素因子分解是唯一的, 对于积性函数 $f$ 以及正整数 $n$ 而言, 假定 $n$ 的质因子分解为$ n=p_1^(a_1)times p_2^(a_2)times ...times p_k^(a_k) $ 那么可以直接得到 $ f(n)=f(p_1^(a_1))times f(p_2^(a_2))times ... times f(p_k^(a_k)) $ 因此我们只需要为每个 $p in PP$ 以及 $a in NN^+$ 指派 $f(p^a)$ 的值即可.
 
-#h(2em) 对于完全积性函数 $g$ , 我们只需要指派 $g(p)$ 的值即可, 因为 $g(p^n)=g(p)^n$ .
+#h(2em) 对于完全积性函数 $g$ , 我们只需要指派 $g(p)$ 的值即可, 因为 $g(p^n)=g(p)^n$ .\ \ 
+
+#theorem[
+  设 $cal(M)_R$ 是全体取值于含幺交换环 $R$ 的积性函数的集合, $*$ 是Dirichlet卷积, 那么 $(cal(M)_R,*)$ 构成一个交换群(这意味着所有积性函数都有唯一的Dirichlet卷积逆).\ 
+  #h(2em) 不过朴素的乘法 $dot$ 不对 $*$ 满足分配律, 所以 $(cal(M)_R,dot,*)$ 不构成环.
+]
+
+==== 常见的积性函数与卷积
+
+#table(
+  columns: (0.7fr, 1.25fr, 0.7fr, 1.35fr),
+  stroke: 0.35pt + luma(150),
+  inset: 2pt,
+  [函数 $f$], [$f(p^a)$ ($a>=1$ )], [常用函数 $g$], [Dirichlet卷积 $f*g$],
+  [$epsilon$], [$0$], [任意 $h$], [$epsilon*h=h$],
+  [$bold(1)$], [$1$], [$id^k$], [$bold(1)*id^k=sigma_k$],
+  [$id^k$], [$p^(a k)$], [$mu$], [$id^k*mu=J_k$],
+  [$mu$], [$a=1$ 时为 $-1$ , 否则为 $0$], [$bold(1)$], [$mu*bold(1)=epsilon$],
+  [$phi$], [$p^(a-1)(p-1)$], [$bold(1)$], [$phi*bold(1)=id$],
+  [$J_k$], [$p^(a k)-p^((a-1)k)$], [$bold(1)$], [$J_k*bold(1)=id^k$],
+  [$tau$], [$a+1$], [$mu$], [$tau*mu=bold(1)$],
+  [$sigma_k$], [$sum_(i=0)^a p^(i k)$], [$mu$], [$sigma_k*mu=id^k$],
+  [$lambda$], [$(-1)^a$], [$bold(1)$], [$lambda*bold(1)=q_2$],
+  [$Q_r$], [$[a<r]$], [$q_r$], [$Q_r*q_r=bold(1)$],
+)
+
+#h(2em) 表中 $p$ 为素数, $k>=1$ , $r>=2$ . 记 $epsilon(n)=[n=1]$ , $bold(1)(n)=1$ , $id^k(n)=n^k$ , $tau=sigma_0$ , $J_k=id^k*mu$ ; $lambda$ 是 Liouville 函数. 另外, $q_r(n)=[exists m in NN^+,n=m^r]$ 是完全 $r$ 次幂指示函数, $Q_r(n)$ 是无 $r$ 次方因子数的指示函数, 特别地 $Q_2=mu^2$ .
+
+#h(2em) 对于 $s>=t>=0$ , 还有
+$
+  (id^s*id^t)(n)=id^t(n)sigma_(s-t)(n),
+$
+特别地 $id^s*id^s=id^s tau$ . 更一般地, 若 $w$ 完全积性, 则 $(w f)*(w g)=w(f*g)$ , 这里 $w f$ 表示逐点乘积.
 
 === Extended GCD
 
@@ -491,6 +523,24 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 
 ==== 常见的构造列表
 
+#table(
+  columns: (1fr, 1fr, 1fr),
+  stroke: 0.35pt + luma(150),
+  inset: 2pt,
+  [要求前缀和的函数 $f$], [构造的函数 $g$], [$f*g$],
+  [#link("https://www.luogu.com.cn/problem/P4213")[P4213]: $mu$], [$bold(1)$], [$mu*bold(1)=epsilon$],
+  [#link("https://www.luogu.com.cn/problem/P4213")[P4213]: $phi$], [$bold(1)$], [$phi*bold(1)=id$],
+  [$id^k mu$], [$id^k$], [$(id^k mu)*id^k=epsilon$],
+  [#link("https://www.luogu.com.cn/problem/P3768")[P3768 ($k=2$ )]: $id^k phi$], [$id^k$], [$(id^k phi)*id^k=id^(k+1)$],
+  [$J_k$], [$bold(1)$], [$J_k*bold(1)=id^k$],
+  [$lambda$], [$bold(1)$], [$lambda*bold(1)=q_2$],
+  [#link("https://www.luogu.com.cn/problem/P4318")[P4318 ($r=2$ )]: $Q_r$], [$q_r$], [$Q_r*q_r=bold(1)$],
+)
+
+#h(2em) 其中 $bold(1)(n)=1$ , $epsilon(n)=[n=1]$ , $id^k(n)=n^k$ ; $id^k f$ 表示逐点乘积 $n^k f(n)$ . $J_k=id^k*mu$ 为 Jordan 函数, $lambda$ 为 Liouville 函数. 对 $r>=2$ , 记 $q_r(n)=[exists m in NN^+,n=m^r]$ , $Q_r(n)$ 为无 $r$ 次方因子数的指示函数, 则 $S_(q_r)(n)=lr(floor n^(1/r) floor.r)$ . P4318 对应 $Q_2=mu^2$ . 对固定的 $k$ , $S_(id^k)$ 可由幂和公式计算, 因而上表中 $g$ 与 $f*g$ 的前缀和都可快速求出.
+
+#h(2em) $sigma_k*mu=id^k$ 与 $tau*mu=bold(1)$ 也成立, 但它们要求预先能够计算 $S_mu$ , 因此属于链式构造, 不属于上表中可直接调用杜教筛的构造.
+
 === Min_25筛
 
 === 万能欧几里德方法
@@ -538,8 +588,5 @@ $
 #code-file("code/math/fft.cpp")
 
 === 取模全家桶
-#code-info(
-  [`poly` 提供长度调整、下标访问、NTT/INTT、加减乘、求逆与求导; `integral()` 预留为积分接口, 但当前实现尚未完成. ],
-  [加减与求导为 $O(n)$ ; 变换、乘法及求逆为 $O(n log n)$ ; 工作空间 $O(n)$ . 当前文件因 `integral()` 未完成而不能编译. ],
-)
-#code-file("code/math/poly(mod).cpp")
+
+#include "../code/polynomial/polynomial.typ"
