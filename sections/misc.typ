@@ -100,6 +100,31 @@ $
 
 == LGV引理
 
+
+#problem[
+设有穷带权 DAG $G$ 中有两组互异顶点 $A_1,...,A_k$ 与 $B_1,...,B_k$ . 路径 $P$ 的权值为 $w(P)=product_(e in P)w(e)$ ; 无权计数时令所有边权为 $1$ . 定义
+$
+  m_(i j)=sum_(P:A_i -> B_j) w(P), quad M=(m_(i j))_(k times k),
+$
+其中 $m_(i j)$ 是从 $A_i$ 到 $B_j$ 的所有有向路径权值和. 问题是计算若干条两两顶点不交路径组成的路径族总权值.
+]
+
+#theorem[LGV引理][
+  对每个排列 $sigma in S_k$ , 记 $op("inv")(sigma)$ 为 $sigma$ 的逆序对数, $cal(P)_sigma$ 为满足 $P_i:A_i -> B_(sigma(i))$ 且两两顶点不交的路径族集合, 路径族权值为 $product_(i=1)^k w(P_i)$ . 则
+  $
+    det M=sum_(sigma in S_k) (-1)^(op("inv")(sigma))
+    sum_((P_1,...,P_k) in cal(P)_sigma) product_(i=1)^k w(P_i).
+  $
+]
+
+#corollary[赛时常用形式][
+  若由平面位置、单调性或拓扑顺序可以证明, 只有恒等排列能够产生不交路径族, 则所求总权值就是 $det M$ . 更一般地, 若只有唯一排列 $sigma_0$ 可行, 则所求总权值为 $(-1)^(op("inv")(sigma_0))det M$ .
+]
+
+#ps[
+  证明略. 使用时依次确定起终点顺序, 独立计算每个单路径权值和 $m_(i j)$ , 证明可行排列唯一, 最后在题目要求的数域或模数下计算 $det M$ . 若多个排列均可行, 行列式只是它们的带符号和, 不能直接当作方案总数.
+]
+
 == 高精度
 
 寫你撚個臭閪嘅高精度, 去寫 python 喇黐線.
@@ -112,7 +137,112 @@ $
 )
 #code-file("code/math/sum&diff.cpp")
 
-== FWT & FMT
+== 广义FWT
+
+#definition[位运算卷积][
+  设系数取自域 $K$ , $[q]:={0,...,q-1}$ , 并给定单个数位上的运算 $compose:[q] times [q]->[q]$ . 对 $x=(x_1,...,x_n),y=(y_1,...,y_n) in [q]^n$ , 定义逐位运算
+  $
+    x compose^* y=(x_1 compose y_1,...,x_n compose y_n).
+  $
+  对数组 $a,b:[q]^n->K$ , 定义它们的 $compose^*$ -卷积
+  $
+    c_k=sum_(i compose^* j=k) a_i b_j, quad k in [q]^n.
+  $
+]\ 
+#problem[
+  给定长度为 $q^n$ 的序列 $chevron a_i:i in [q]^n chevron.r,chevron b_i:i in [q]^n chevron.r$ , 求他们的 $compose^*$-卷积.
+]#ps[直接枚举有序对 $(i,j)$ 需要 $O(q^(2n))$ 时间. 广义FWT尝试把卷积变成变换域中的逐项乘法, 从而同时求出全部 $q^n$ 个 $c_k$ .]
+
+=== 单个数位上的矩阵构造
+
+#theorem[局部构造条件][
+  若存在 $q times q$ 矩阵 $A,B,C$ , 其中 $C$ 可逆, 且对任意 $t,i,j in [q]$ 均有
+  $
+    C_(t,i compose j)=A_(t,i)B_(t,j),
+  $
+  则在单数位上
+  $
+    C c=(A a) dot.o (B b),
+  $
+  其中 $dot.o$ 表示逐项乘法. 反之, 若此等式对任意 $a,b in K^q$ 成立, 分别取 $a=e_i,b=e_j$ 即可得到上述矩阵元素条件, 因而两者等价.
+]
+
+=== 由 $[q]$ 推广到 $[q]^n$
+
+#h(2em) 令 $V=K^q$ , 以 $e_0,...,e_(q-1)$ 为基, 则数组空间可识别为 $K^([q]^n) ≅ V^(times.o n)$ . 定义
+$
+  A^*=A^(times.o n), quad
+  B^*=B^(times.o n), quad
+  C^*=C^(times.o n),
+$
+其中 $times.o$ 表示TensorProduct. 对任意 $t,i in [q]^n$ , 张量积矩阵的元素为
+$
+  (A^*)_(t,i)=product_(r=1)^n A_(t_r,i_r),
+$
+$B^*,C^*$ 同理. 局部构造条件可以逐坐标相乘:
+$
+  (C^*)_(t,i compose^* j)
+  =product_(r=1)^n C_(t_r,i_r compose j_r)
+  =product_(r=1)^n A_(t_r,i_r)B_(t_r,j_r)
+  =(A^*)_(t,i)(B^*)_(t,j).
+$
+所以单数位结论自动提升为
+$
+  C^* c=(A^* a) dot.o (B^* b),
+$
+并且 $(C^*)^(-1)=(C^(-1))^(times.o n)$ . 因此卷积可以依次执行
+$
+  a'=A^*a, quad b'=B^*b, quad d=a' dot.o b', quad c=(C^(-1))^(times.o n)d.
+$
+
+=== 逐位蝶形
+
+#h(2em) 不应显式构造 $q^n times q^n$ 的 $T^(times.o n)$ . 从低位到高位依次处理 $n$ 个数位: 第 $i$ 轮枚举低 $i-1$ 位编码 $x$ 和高 $n-i$ 位编码 $y$ , 令
+$
+  op("pos")(s)=x+s q^(i-1)+y q^i, quad 0<=s<q.
+$
+取出 $v_s=f_(op("pos")(s))$ , 计算 $w=T v$ , 再统一写回 $f_(op("pos")(s))=w_s$ . 第 $i$ 轮结束后, 数组处于混合基底
+$
+  f^((i))=(T^(times.o i) times.o I^(times.o (n-i)))f^((0)),
+$
+即前 $i$ 位已经变换, 后 $n-i$ 位仍为原下标. 全部轮次结束后即得到 $T^(times.o n)f$ .\ \ 
+
+#code-info(
+  [`fwt::work(q,n,f,T)` 原地计算 $f←T^(times.o n)f$ . 要求 `f.size()==q^n`、`T` 为 $q times q$ 矩阵, 且元素已经按 `matrix::mo` 归一化; 依赖线性代数类的主体框架. 求卷积时分别以 $A,B$ 变换两个输入并逐项相乘, 再以 $C^(-1)$ 变换乘积. ],
+  [令 $N=q^n$ , 稠密矩阵下时间为 $O(n q N)$ , 额外空间为 $O(q)$ ; 当 $q$ 为常数时, 时间为 $O(N log N)$ . ],
+)
+#code-file("code/math/fwt.cpp")
+
+=== 常见的 FWT 的矩阵
+
+#text(size: 6pt)[
+  #table(
+    columns: (0.65fr, 1.25fr, 1.1fr, 1.1fr),
+    stroke: 0.35pt + luma(150),
+    inset: 2pt,
+    align: center,
+    [*卷积*], [*定义*], [*$A=B=C=T$*], [*$T^(-1)$*],
+    [OR], [$c_k=sum_(i " OR " j=k)a_i b_j$], [$mat(1,0;1,1)$], [$mat(1,0;-1,1)$],
+    [AND], [$c_k=sum_(i " AND " j=k)a_i b_j$], [$mat(1,1;0,1)$], [$mat(1,-1;0,1)$],
+    [XOR], [$c_k=sum_(i " XOR " j=k)a_i b_j$], [$mat(1,1;1,-1)$], [$1/2 mat(1,1;1,-1)$],
+  )
+]
+
+#h(2em) 三行分别取 $compose$ 为二进制 OR、AND、XOR, 直接验证 $T_(t,i compose j)=T_(t,i)T_(t,j)$ 即可. OR 与 AND 的变换分别是子集和与超集和; XOR 的逆变换要求 $2$ 可逆, 在模运算中通常要求模数为奇质数. 构造代码中的矩阵时, 表内的 $-1$ 与 $1/2$ 应分别写成 `mo-1` 与 `qpow(2)`.
+
+=== 特例: 异或卷积的写法
+
+#h(2em) XOR 的单数位矩阵满足 $T^(-1)=T/2$ . 因此每轮只需执行蝶形
+$
+  (u,v)->(u+v,u-v),
+$
+正变换和逆变换可以使用同一组蝶形; 完成 $n$ 轮后有 $(T^(times.o n))^2=2^n I=N I$ , 故逆变换最后统一乘 $N^(-1)$ 即可, 无须构造或访问 `matrix`.\ \ 
+
+#code-info(
+  [`xor_fwt::work(f,opt)` 原地执行 XOR 变换; `opt=0` 为FWT, `opt=1` 为IFWT. 要求 `f` 非空且长度 $N$ 为二次幂, 元素已经在 `[0,mo)` 内; 逆变换还要求 $N$ 在模 `mo` 下可逆. 求 XOR 卷积时对两个输入执行FWT、逐项相乘, 再执行IFWT. ],
+  [时间 $O(N log N)$ , 除输入数组外额外空间 $O(1)$ . ],
+)
+#code-file("code/math/xor-fwt.cpp")
 
 == 三元环计数
 
@@ -129,5 +259,71 @@ $
   一个三元环的三个点按上述顺序排列后, 边的方向必为 $u->v,u->w,v->w$ , 因此它恰好会被统计一次. 对任意点 $v$ , 若 $d_v<=sqrt(m)$ , 则其出度显然不超过 $sqrt(m)$ ; 否则它只能指向度数同样大于 $sqrt(m)$ 的点, 而这样的点至多有 $O(sqrt(m))$ 个. 所以每条边之后至多继续枚举 $O(sqrt(m))$ 条边, 总时间复杂度为 $O(m sqrt(m))$ .
 ]
 
-
 == 四边形不等式优化
+
+=== 四边形不等式
+
+#definition[四边形不等式][
+  设 $w(l,r)$ 为区间 $[l,r]$ 的代价. 若对任意 $a<=b<=c<=d$ 均有
+  $
+    w(a,c)+w(b,d)<=w(a,d)+w(b,c),
+  $
+  则称 $w$ 满足四边形不等式, 其代价矩阵为Monge矩阵. 等价地,
+  $
+    w(a,d)-w(a,c)>=w(b,d)-w(b,c),
+  $
+  即向右扩展相同的一段时, 左端点越靠左, 新增代价越大.
+]
+
+#ps[
+  实际证明时常先验证相邻形式
+  $
+    w(i,j)+w(i+1,j+1)<=w(i,j+1)+w(i+1,j),
+  $
+  再通过累加得到一般形式. 以下均讨论取最小值; 对最大值问题应相应反转不等号或对代价取负.
+]
+
+=== 分层DP的分治优化
+
+#theorem[决策单调性][
+  考虑转移
+  $
+    f_t(i)=min_(0<=j<i){f_(t-1)(j)+w(j+1,i)}.
+  $
+  令 $op("opt")_t(i)$ 为取得最小值的最小决策 $j$ . 若 $w$ 满足四边形不等式, 则
+  $
+    op("opt")_t(i)<=op("opt")_t(i+1).
+  $
+]
+
+#h(2em) 计算区间 $[l,r]$ 的中点 $m$ 时, 在候选区间 $[L,R]$ 中求出 $op("opt")(m)=p$ ; 随后左半区间只搜索 $[L,p]$ , 右半区间只搜索 $[p,R]$ . 若转移代价能 $O(1)$ 计算, 每层DP由 $O(n^2)$ 降为 $O(n log n)$ , 共 $k$ 层时为 $O(k n log n)$ .
+
+=== 区间DP的Knuth优化
+
+#definition[区间包含单调性][
+  若对任意 $a<=b<=c<=d$ 均有
+  $
+    w(b,c)<=w(a,d),
+  $
+  则称 $w$ 满足区间包含单调性.
+]
+
+#theorem[Knuth优化][
+  考虑区间DP
+  $
+    f(l,r)=w(l,r)+min_(l<=k<r){f(l,k)+f(k+1,r)}.
+  $
+  若 $w$ 同时满足四边形不等式和区间包含单调性, 则可选择最优断点 $op("opt")(l,r)$ 使得
+  $
+    op("opt")(l,r-1)<=op("opt")(l,r)<=op("opt")(l+1,r).
+  $
+  因而计算 $f(l,r)$ 时只需枚举
+  $
+    op("opt")(l,r-1)<=k<=min(r-1,op("opt")(l+1,r)),
+  $
+  总时间由 $O(n^3)$ 降为 $O(n^2)$ , DP与决策数组的空间为 $O(n^2)$ .
+]
+
+#example[石子合并][
+  当石子重量非负且 $w(l,r)=sum_(i=l)^r a_i$ 时, 四边形不等式取等号, 区间包含单调性也成立, 因此上述区间合并DP可以使用Knuth优化.
+]

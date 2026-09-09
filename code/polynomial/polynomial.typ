@@ -103,3 +103,20 @@
   [令 $n=max(deg A,deg B)+1$ , 时间为 $O(n log n)$ , 额外空间为 $O(n)$ . ],
 )
 #code-file("code/polynomial/divmod.cpp")
+
+==== 在线卷积
+#problem[
+给定有穷序列 $chevron b_i chevron.r$ 和正整数 $k$ , 求序列 $chevron f_i chevron.r$ 满足\ \ 
+$
+  f_n=b_n+[n>=k] sum_(i+j=n-k) f_i f_j quad (k>=1),
+$
+]#ps[
+等价于 $F(x)=B(x)+x^k F(x)^2$ . 将已经确定的 $[x^(n-k)]F^2$ 贡献直接累加到 `f[n]`; CDQ 先求 `[l,mid]`, 再更新 `[mid+1,r]` 后递归右半边, 叶节点负责加入 `B[n]` .
+]\ 
+#h(2em) 令 $A=f[l..mid]$ , $P=f[0..min(l-1,r-l-1)]$ . 新贡献为 $A^2+2A P$ . 对右侧下标 `n`, 令 `t=n-k`; `A*A` 与 `A*P` 中应读取的局部下标分别是 `t-2*l` 与 `t-l`, 越界即忽略. 截短 `P` 是保证每个子卷积规模与当前区间长度同阶的关键.\ \ 
+
+#code-info(
+  [准备等长的 `poly f(N+1),B(N+1)`, 将 $b_0..b_N$ 写入 `B`, 保持 `f` 初始全零, 再调用 `SelfConv::solve(0,N,k,f,B)`; 答案为 `f[N]`. 卡特兰数取 `B[0]=1,k=1`; $F=1+x^k F^2$ 只需更换 `k`. 要求 $k>=1$ , 并依赖前面的 `poly` 乘法. ],
+  [每个 CDQ 节点执行至多两次子卷积, 总时间为 $O(N log^2 N)$ , 额外空间为 $O(N)$ , 递归栈为 $O(log N)$ . ],
+)
+#code-file("code/polynomial/online-convolution.cpp")

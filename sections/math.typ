@@ -545,17 +545,18 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 
 === 万能欧几里德方法
 
-==== 问题
+#problem[
 设 $(T,D,e)$ 为幺半群, 即 $D:T times T arrow T$ 满足结合律, $e$ 为双侧单位元. 给定 $u,r in T$ 以及整数 $n,a,b>=0$、$c>0$ , 记
 $
   y_i=lr(floor (a i+b)/c floor.r) quad (0<=i<=n).
 $
-约定 $x^0=e$、$x^k=D(x^(k-1),x)$ , 万能欧几里得方法所求的是
+约定 $x^0=e$、$x^k=D(x^(k-1),x)$ , 求
 $
   F(n,a,b,c;u,r)=u^(y_0) product_(i=1)^n (r u^(y_i-y_(i-1))).
 $
+]#ps[
 式中的乘法均指运算 $D$ , 且乘积严格按照 $i$ 递增的顺序计算. 它等价于对直线 $y=lr(floor (a x+b)/c floor.r)$ 下方的格路径编码: 每向上一步乘入 $u$ , 每向右一步乘入 $r$ . 因为 $D$ 不要求满足交换律, 操作的先后顺序不能改变.
-
+]
 #example[取整和][
   要求
   $
@@ -568,9 +569,8 @@ $
   单位元取 $(0,0,0)$ , 并令 $u=(1,0,0)$、$r=(0,1,0)$ . 连接 $X$ 与 $Y$ 时, $Y$ 中每个向右步之前都会多出 $p_1$ 个向上步, 因而交叉贡献为 $p_1 q_2$ , 所以 $D$ 满足结合律.
 
   调用 `solve(n,a,b,c,u,r)` 后, 返回三元组的第三个分量就是 $S$ . 若要求 $sum_(i=0)^N lr(floor (a i+b)/c floor.r)$ , 则调用 `solve(N+1,a,b,c,u,r)` .
-]
+]\ 
 
-==== 实现
 #code-info(
   [`MegaEuclid(unit,D)` 固定幺半群的单位元与结合运算; 令 $y_i=lr(floor (a i+b)/c floor.r)$ , `solve(n,a,b,c,u,r)` 返回操作串 $u^(y_0) product_(i=1)^n (r u^(y_i-y_(i-1)))$ 的幺半群积, 其中 `u`、`r` 分别表示向上、向右一步. 第 $i+1$ 个 `r` 出现于 $(i,y_i)$ , 故它编码的取整值下标范围为 $0<=i<n$ ; 若要求 $0<=i<=N$ , 应传入 `n=N+1`. ],
   [`D` 必须满足结合律, `unit` 必须是其双侧单位元; 要求 $n,a,b>=0$ 、$c>0$ , 且中间商能存入 `int`. 令 $M=max(n,a,b,c,2)$ , 在一次 `D` 运算与一次 `T` 拷贝均为 $O(1)$ 时, 递归深度为 $O(log M)$ , 每个连续操作块的幂由 `qpow` 在 $O(log M)$ 次 `D` 运算内求出, 因而总时间为 $O(log^2 M)$ , 递归栈空间为 $O(log M)$ . ],
@@ -582,7 +582,7 @@ $
 === 复数FFT
 
 #code-info(
-  [`cmplx` 提供复数四则所需操作; `fft(f,tag)` 原地执行长度为二次幂的 DFT(`tag=0`)或 IDFT(`tag=1`). ],
+  [`cmplx` 提供复数四则所需操作; `fft::work(f,tag)` 原地执行长度为二次幂的 DFT(`tag=0`)或 IDFT(`tag=1`). ],
   [长度为 $n$ 时, 时间 $O(n log n)$ , 除输入数组外额外空间 $O(1)$ . ],
 )
 #code-file("code/math/fft.cpp")
