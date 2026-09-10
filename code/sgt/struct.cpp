@@ -5,7 +5,7 @@ struct SegmentTree{
     node(int x=0,int y=0,signed u=0,signed v=0){
       l=x,r=y,ch[0]=u,ch[1]=v;
     }
-    signed &operator[](size_t id){return ch[id];}
+    signed &operator[](size_t i){return ch[i];}
   };
   vector<node> tr;
   vector<signed> rootlist;
