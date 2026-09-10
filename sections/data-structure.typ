@@ -67,6 +67,36 @@
 
 === 历史版本和问题
 
+#problem[
+维护序列 $chevron a_i chevron.r$ , 支持:
+1. 给出 $l,r,v$ , 对所有 $i in [l,r]$ 执行 $a_i <- a_i+v$ .
+2. 给出 $l,r,v$ , 其中 $v>0$ , 对所有 $i in [l,r]$ 执行 $a_i <- v a_i$ .
+3. 将整个当前序列作为一个新版本计入历史.
+4. 查询当前版本在 $[l,r]$ 上的区间和.
+5. 查询所有已计入版本在 $[l,r]$ 上的区间和之和.
+]\ 
+#h(2em)设当前位置的值为 $a_i$ , 已计入的各版本之和为 $h_i$ . 对每个节点同时维护区间和 $sum a_i$ 与历史区间和 $sum h_i$ . 一个标记 $(p,q,c,d)$ 表示对区间内每个位置依次执行
+$
+  a_i <- p a_i+q, quad h_i <- h_i+c a_i+d.
+$
+因此它作用于长度为 $ell$ 的节点时, 应先用旧的区间和更新
+$
+  sum h_i <- sum h_i+c sum a_i+d ell,
+  quad sum a_i <- p sum a_i+q ell.
+$
+若标记 $X=(p_x,q_x,c_x,d_x)$ 后紧接标记 $Y=(p_y,q_y,c_y,d_y)$ , 则二者可以合成为
+$
+  (p_y p_x, p_y q_x+q_y,
+  c_x+c_y p_x, d_x+c_y q_x+d_y).
+$
+区间乘 $v$ 、区间加 $v$ 与将当前版本计入历史分别对应 $(v,0,0,0)$ 、$(1,v,0,0)$ 与 $(1,0,1,0)$ . 因而后者可以直接作用于根, 无须遍历整棵树.\ \ 
+
+#code-info(
+  [`build(a)` 由下标从 $1$ 开始的数组建树, 并把初始数组计作第一个版本. `modify(l,r,mul,add)` 执行 $a_i <- m a_i+b$ , 其中 $m,b$ 分别是参数 `mul,add`; 区间乘 $v$ 使用 `(v,0)`, 区间加 $v$ 使用 `(1,v)`. `compose()` 将整个当前数组计入一次历史; 若每次修改都产生新版本, 应在每次 `modify` 后调用它. `query1/query2(l,r)` 分别查询当前区间和与所有已计入版本的区间和. ],
+  [`build` 为 $O(n)$ 时间与空间; `modify` 、`query1` 、`query2` 均为 $O(log n)$ , `compose` 为 $O(1)$ . 乘数须为正数, 且代码不取模, 所有中间结果必须能由 `int` 承载. ],
+)
+#code-file("code/sgt/history.cpp")
+
 == FHQ_Treap
 
 #code-info(

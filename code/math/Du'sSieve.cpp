@@ -1,11 +1,11 @@
+template<class A,class B>
 struct DuJiao_sieve{
   static constexpr int mo=_MOD_;
   unordered_map<int,int> umap;
-  function<int(int)> S_g,S_fg;
-  template<class F,class G>
-  DuJiao_sieve(int inv_g,F f,G g){
+  A S_g;B S_fg;
+  DuJiao_sieve(int inv_g,A sg,B sfg):
+  S_g(move(sg)),S_fg(move(sfg)){
     umap={{-1,inv_g}};
-    S_g=f,S_fg=g;
   }
   int solve(int n,VI &pre){
     if(umap.count(n))return umap[n];

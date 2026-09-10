@@ -1,11 +1,10 @@
+template<class F>
 struct VirtualTree{
-  function<int(int,int)> lca;
   VI dfn,dep;
+  F lca;
   int root;
-  template<class F>
-  VirtualTree(VI &DFN,VI &DEP,F f,int rt){
-    lca=f,dfn=DFN,dep=DEP,root=rt;
-  }
+  VirtualTree(VI &DFN,VI &DEP,F f,int rt):
+  dfn(DFN),dep(DEP),lca(move(f)),root(rt){}
   int work(VI Nd,vector<VI> &tree,VI &lnk){
     lnk={-1,root},tree={{},{}};
     VI stk={1};
