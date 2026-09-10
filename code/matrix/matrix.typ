@@ -93,3 +93,14 @@
   [对 $n$ 阶方阵, 时间为 $O(n^3)$ , 额外空间为 $O(n^2)$ . ],
 )
 #code-file("code/matrix/inverse.cpp")
+
+#ps[
+  当前模板使用 `vector<VI>` (即 `vector<vector<int>>`) 存储矩阵, 每一行需要单独动态分配, 且各行在内存中不保证连续. 若题目需要进行大量矩阵乘法, 建议按矩阵维数上界 `_N_` 改用原生数组, 并同步修改以下位置:
+
+  1. 将 `vector<VI> a;` 改为 `static constexpr int N=_N_; int a[N][N];` .
+  2. 将构造函数中的 `a.assign(n,VI(m,v));` 改为 `for(int i=0;i<n;++i)fill(a[i],a[i]+m,v);` .
+  3. 将行访问改为 `int *operator[](size_t i){return a[i];}` 和 `const int *operator[](size_t i)const{return a[i];}` , 此后其余 `ret[i][j]` 等访问方式均无须改变.
+  4. 指针返回值不能表示可交换的整行, 故将高斯消元中的 `swap(r[i],r[j]);` 改为 `swap(r.a[i],r.a[j]);` . 该写法会逐元素交换完整的 `_N_` 项, 因此应保证整行存储均已初始化.
+
+  每个 `matrix` 对象都会固定占用 $Theta(N^2)$ 空间, 应合理设置 `_N_` 并留意局部对象造成的栈空间占用; 大量乘法时还可进一步复用结果缓冲区.
+]
