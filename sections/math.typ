@@ -543,6 +543,43 @@ $|D(n)|=Theta(sqrt(n))$ , 更精确地, $ |D(n)|=floor sqrt(4n+1)floor.r-1 $
 
 === Min_25筛
 
+#h(2em) 设 $f$ 为满足 $f(1)=1$ 的积性函数, 且在质数处有 $f(p)=sum_(k=0)^d c_k p^k$ . Min_25 筛利用整数幂和筛出各个 $sum_(p<=x)p^k$ , 再按照最小质因子递归枚举质数幂, 从而求出 $sum_(i=1)^n f(i)$ .\ \ 
+
+#text(size: 6.2pt)[
+  *构造:* `Min25_sieve(sym,S_pow,f_pk)` \
+  #table(
+    columns: (1.05fr, 3.25fr),
+    stroke: 0.35pt + luma(150),
+    inset: 1.8pt,
+    [*参数*], [*必须传入的内容*],
+    [`sym`], [`VI` 类型的系数表. 若 $f(p)=sum_(k=0)^d c_k p^k$ 对每个质数 $p$ 成立, 则令 `sym[k]=c_k`, 长度为 $d+1$ . 系数先对 `mo` 取模, 例如 $-1$ 输入 `mo-1`. ],
+    [`S_pow`], [可调用对象. `S_pow(k,x)` 中 `k` 是幂次, `x` 是未取模的求和上界; 返回 $sum_(t=1)^x t^k mod "mo"$ . 必须实现所有 $0<=k<"sym.size()"$ 的情况, 即使 `sym[k]=0`. ],
+    [`f_pk`], [可调用对象. `f_pk(p,e,pe)` 中 `p` 是质数, `e>=1` 是指数, `pe` 是未取模的整数 $p^e$ ; 返回真正的 $f(p^e) mod "mo"$ . 必须保证 `f_pk(p,1,p)` 与 `sym` 给出的 $f(p)$ 相同. ],
+  )
+  #v(2pt)
+  *求解:* `solve(n,pr,pre,tag=0)` \
+  #table(
+    columns: (1.05fr, 3.25fr),
+    stroke: 0.35pt + luma(150),
+    inset: 1.8pt,
+    [*参数*], [*必须传入的内容*],
+    [`n`], [要求和的正整数上界, 不取模. ],
+    [`pr`], [`VI` 类型的升序质数表, `pr[0]=2`, 不放占位元素; 至少包含全部 $p<=floor sqrt(n) floor.r$ , 可以包含更多质数. ],
+    [`pre`], [`VI` 类型的质数位置前缀和, 长度至少为 `pr.size()+1`. 令 `pre[0]=0`, 再依次计算 `pre[i+1]=(pre[i]+f(pr[i]))%mo`. 因而 `pre[i]` 表示前 `i` 个质数的函数值之和, 不是 $sum_(t=1)^i f(t)$ . ],
+    [`tag`], [求和范围开关. 省略或传入 `0` 时返回全体位置之和 $sum_(i=1)^n f(i)$ ; 传入 `1` 时仅返回质数位置之和 $sum_(p<=n)f(p)$ , 并跳过 `dfs` 中的质数幂递归. ],
+    [返回值], [`tag` 所指定的前缀和模 `mo` 的结果. `tag=0` 时模板固定按 $f(1)=1$ 处理. ],
+  )
+]\ 
+
+#code-info(
+  [求全体位置时调用 `solve(n,pr,pre)` 或 `solve(n,pr,pre,0)` ; 求质数位置时调用 `solve(n,pr,pre,1)` . `tag=1` 仍需要 `pr` 完成筛法, 但不会调用 `f_pk`, 且 `pre` 只会读取 `pre[0]=0`; 为复用接口仍须传入它. \
+  求全体位置时, 先在线性筛中得到 `pr` 与质数处的 `f`, 据此构造完整的 `pre`; 再定义 `S_pow`、`f_pk` 并构造对象. `sym`、两个函数返回值与 `pre` 的模意义结果均须位于 $[0,"mo")$ . ],
+  [令 $K$ 为 `sym.size()` . 不计外部线性筛, 两种模式的时间均为 $O(K n^(3/4)/log n)$ , 空间均为 $O(K sqrt(n))$ ; `tag=1` 跳过 `dfs`, 因而常数更小. ],
+)
+#code-file("code/math/min25Sieve.cpp")
+
+#h(2em) 例如求 $sum_(i=1)^n phi(i)$ 时, 输入 `sym={mo-1,1}` ; 令 `S_pow(0,x)=x%mo`, `S_pow(1,x)=x%mo*((x+1)%mo)%mo*((mo+1)/2)%mo`; 令 `f_pk(p,e,pe)=(pe-pe/p)%mo`. 线性筛得到 `pr` 与 `phi` 后构造上述 `pre`, 最后执行 `Min25_sieve solver(sym,S_pow,f_pk)` 与 `solver.solve(n,pr,pre)` .
+
 === 万能欧几里德方法
 
 #problem[
