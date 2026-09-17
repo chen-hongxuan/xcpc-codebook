@@ -137,6 +137,16 @@ $
 )
 #code-file("code/math/sum&diff.cpp")
 
+== 格雷码
+
+#h(2em) $n$ 位二进制反射格雷码按 $g_i=i xor (i>>1)$ 排列, 相邻两项恰有一个二进制位不同, 首尾两项也满足这一性质.
+
+#code-info(
+  [`gray_code::work(n,ret)` 生成全部 $n$ 位格雷码并覆盖 `ret`; 返回后 `ret.size()==2^n` 且 `ret[i]=i^(i>>1)`. 允许 $n=0$ , 此时结果为 `{0}` . ],
+  [时间与输出空间均为 $O(2^n)$ , 除输出数组外额外空间 $O(1)$ . ],
+)
+#code-file("code/math/gray-code.cpp")
+
 == 广义FWT
 
 #definition[位运算卷积][
