@@ -6,7 +6,7 @@ struct Lagrange{
     for(;t;t>>=1,x=x*x%mo)if(t&1)ret=ret*x%mo;
     return ret;
   }
-  vector<array<int,3>> node;
+  VIII node;
   Lagrange():node({}){}
   int insert(int x,int y){
     for(auto [rx,ry,p]:node){

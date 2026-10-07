@@ -1,5 +1,5 @@
 namespace spfa{
-  int work(int n,VI &s,vector<vector<array<int,2>>> &edge,VI &dis){
+  int work(int n,VI &s,vector<VII> &edge,VI &dis){
     queue<int> q;
     dis.assign(n+5,inf);
     VI vis(n+5,0),cnt(n+5,0);

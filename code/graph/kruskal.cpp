@@ -1,6 +1,6 @@
 namespace kruskal{
-  vector<array<int,3>> work(int n,vector<array<int,3>> edge){
-    vector<array<int,3>> ret={};
+  VIII work(int n,VIII edge){
+    VIII ret={};
     vector<int> f(n+3);
     for(int i=1;i<=n;++i)f[i]=i;
     function<int(int)> find=[&](int x){

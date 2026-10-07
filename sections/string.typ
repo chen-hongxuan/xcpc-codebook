@@ -35,11 +35,11 @@
 == KMP & exKMP
 === 代码
 #code-info(
-  [`KMP(x,pi)` 求失配数组(最长真 border 的末下标); `exKMP(x,z)` 求各后缀与原串的 LCP, 约定 `pi[0]=-1,z[0]=0`. ],
+  [`KMP::work(x,pi)` 求失配数组(最长真 border 的末下标); `exKMP::work(x,z)` 求各后缀与原串的 LCP, 约定 `pi[0]=-1,z[0]=0`. ],
   [字符串长度为 $n$ 时, 两者均为 $O(n)$ 时间、$O(n)$ 输出空间, 除此之外额外空间 $O(1)$ . ],
 )
 #code-file("code/string/kmp.cpp")
-
+#code-file("code/string/exkmp.cpp")
 === 核心性质
 
 #h(2em) `pi[i]` 记录前缀 `S[0..i]` 的最长真 border 末下标. KMP 失配时沿 `pi` 跳到次长候选, 候选长度严格减小; 指针在整个扫描过程中总共只前进与回退 $O(n)$ 次.

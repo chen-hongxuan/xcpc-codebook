@@ -1,5 +1,5 @@
 namespace dijkstra{
-  void work(int n,VI &s,vector<vector<array<int,2>>> &edge,VI &dis){
+  void work(int n,VI &s,vector<VII> &edge,VI &dis){
     priority_queue<array<int,2>> q;
     dis.assign(n+5,inf);
     VI vis(n+5,0);

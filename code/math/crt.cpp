@@ -4,7 +4,7 @@ namespace crt{
     auto [g,a,b]=exgcd(y,x%y);
     return {g,b,a-(x/y)*b};
   }
-  int CRT(vector<array<int,2>> sym){
+  int CRT(VII sym){
     int n=1,ret=0;
     for(auto x:sym)n=n*x[1];
     for(auto [a,r]:sym){
@@ -22,7 +22,7 @@ namespace crt{
     x={u*x[1]+x[0],x[1]/g*y[1]};
     return 0;
   }
-  int exCRT(vector<array<int,2>> sym){
+  int exCRT(VII sym){
     array<int,2> ret={0,1};
     for(auto e:sym){
       if(merge(ret,e)){

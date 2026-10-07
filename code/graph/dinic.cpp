@@ -1,5 +1,5 @@
 struct dinic{
-  vector<vector<array<int,3>>> edge;
+  vector<VIII> edge;
   VI lv,cur;
   int n,s,t;
   void dinic_init(int a,int b,int c){

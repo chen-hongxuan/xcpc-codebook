@@ -14,6 +14,16 @@
 
 #include "../code/matrix/matrix.typ"
 
+== 欧拉路径/回路
+
+#h(2em) *建图约定*: 图须连通、无自环, 允许重边, 点编号为 $1,...,n$ . 使用 `vector<VII> edge(n+1)`; 若 `edge[u][i]={v,j}`, 则须有 `edge[v][j]={u,i}`. `i,j` 是各自邻接表中从 $0$ 开始的下标.
+
+#code-info(
+  [`EularGraph::Hierholzer(n,edge)` 返回欧拉通路的顶点序列, 全偶度时返回首尾相同的回路, 无解返回 `{-1}`. `EularGraph::ex_Hierholzer(n,edge)` 返回最少条数的边不交欧拉通路, 每条以顶点序列表示; 设奇度点数为 $k$ , 有边时返回 $max(1,k/2)$ 条. 两者均不改变原图; 单点无边时分别返回 `{1}` 和 `{{1}}`. ],
+  [两者时间、空间均为 $O(n+m)$ , $m$ 为原图边数; 递归深度最坏 $O(m+1)$ . ],
+)
+#code-file("code/graph/eularc.cpp")
+
 == matrix-tree定理
 
 === 无向图

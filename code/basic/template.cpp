@@ -2,6 +2,8 @@
 
 #define int long long
 #define VI vector<int>
+#define VII vector<array<int,2>>
+#define VIII vector<array<int,3>>
 
 using namespace std;
 
