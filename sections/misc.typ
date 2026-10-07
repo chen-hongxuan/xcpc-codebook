@@ -92,6 +92,10 @@ $
 #corollary[][
   一个 $n$ 个点的带标号无向图, 它有 $k$ 个连通块, 我们希望添加 $k-1$ 条边使得整个图连通, 假定第 $i$ 个连通块里有 $s_i$ 个顶点, 那么添加边的方案数是$ n^(k-2)product_(i=1)^k s_i $
 ]
+== 长链剖分优化DP
+
+#include "../code/longchain/longchain.typ"
+
 == 虚树
 
 #code-info(
