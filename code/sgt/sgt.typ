@@ -50,6 +50,40 @@
 )
 #code-file("code/sgt/normal/min_Left.cpp")
 
+=== 区间加与区间最大值
+
+==== 维护信息
+
+#code-info(
+  [沿用公共结构的节点池与儿子编号, 将 `node` 的 `val=0` 改为 `val=-inf`, `tag=0` 保留; 用下方成员替换公共结构的 `pushup/pushdown`, 再加入本节的修改与查询. 建树使用普通的 `build`, 创建的根及区间须已完整建立. `apply(p,v)` 给全部已有状态加 $v$ , 根的最大值为 `tr[p].val`. ],
+  [`apply/pushup/pushdown` 均为 $O(1)$ . 空状态保持 `-inf`, 以后新插入状态不受旧标记影响; 有限值及修改后值须严格大于 `-inf`, 中间运算不得溢出. ],
+)
+#code-file("code/sgt/maxadd/info.cpp")
+
+==== 单点取最大值
+
+#code-info(
+  [`change(p,x,v)` 将位置 $x$ 的值更新为与 $v$ 的最大值, 可初始化空位置; 要求 $x$ 位于根区间. ],
+  [单次时间与递归栈为 $O(log U)$ . ],
+)
+#code-file("code/sgt/maxadd/change.cpp")
+
+==== 区间加
+
+#code-info(
+  [`modify(p,L,R,v)` 给根区间与 $[L,R]$ 交集内已有状态加 $v$ , 空位置仍为空. ],
+  [单次时间与递归栈为 $O(log U)$ . ],
+)
+#code-file("code/sgt/maxadd/modify.cpp")
+
+==== 区间最大值
+
+#code-info(
+  [`query(p,L,R)` 返回根区间与 $[L,R]$ 交集的最大值, 空区间或没有可达状态时返回 `-inf`; 查询会下传标记. ],
+  [单次时间与递归栈为 $O(log U)$ . ],
+)
+#code-file("code/sgt/maxadd/query.cpp")
+
 === 动态开点线段树
 
 ==== 插入式修改
