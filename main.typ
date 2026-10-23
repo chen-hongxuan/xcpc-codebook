@@ -19,4 +19,5 @@
 #include "sections/data-structure.typ"
 #include "sections/math.typ"
 #include "sections/misc.typ"
+#include "sections/stl.typ"
 #include "sections/checklist.typ"

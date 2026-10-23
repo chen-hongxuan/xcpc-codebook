@@ -13,6 +13,21 @@ inline int read(){
   for(;isdigit(ch);ch=getchar())x=x*10+(ch^48);
   return f?x:-x;
 }
+inline void write(int x,char ch=0){
+  if(x<0)putchar('-');
+  if(!x)putchar('0');
+  else{
+    string line;
+    do{
+      int d=x%10;
+      line+=(d<0?-d:d)+48;
+      x/=10;
+    }while(x);
+    reverse(line.begin(),line.end());
+    printf("%s",line.c_str());
+  }
+  if(ch)putchar(ch);
+}
 template<class T>
 inline void chmin(T &x,T y){x>y?x=y:y;}
 template<class T>

@@ -682,3 +682,95 @@ $
 === 取模全家桶
 
 #include "../code/polynomial/polynomial.typ"
+
+== 线性代数类
+
+#include "../code/matrix/matrix.typ"
+
+== 线性基
+
+#code-info(
+  [`LinearBasis(n)` 建立处理 $n$ 位整数的空线性基, 使用时须指定位数 $1<=n<=63$ , 输入满足 $0<=x<2^n$ (依赖公共模板的 64 位 `int`). `operator[](i)` 返回 `B[i]` 的引用; `proj(x)` 返回消去所有已有主元位后的剩余值, 即以 `x` 为初值异或当前基底可取得的最小值; `proj_max(x)` 返回对应的最大值. 两个查询均不改变基底. `insert(x)` 插入 `x`, 线性相关时不改变基底; `dim()` 返回当前维数. `B[i]` 非零时最高位为 $i$, 且其余主元位均为 $0$. ],
+  [初始化与对象空间均为 $O(n)$ ; `operator[]` 为 $O(1)$ ; `proj`、`proj_max`、`insert`、`dim` 单次时间均为 $O(n)$ , 额外空间均为 $O(1)$ . ],
+)
+#code-file("code/math/linearBasis.cpp")
+
+=== 性质与结论
+
+以下固定满足上述主元条件的基底, 记其张成的空间为 $V$, 维数为 $r$. 查询以 $x$ 为初值, 允许再异或零个或多个基向量, 记
+$
+  g(x)&=op("proj")(x)=min_(v in V)(x xor v), \
+  f(x)&=op("proj_max")(x)=max_(v in V)(x xor v), \
+  M&=f(0)=max V.
+$
+
+#property[极值关系][
+  $ f(x)=g(x) xor M, quad M=xor.big_i B[i]. $
+  其中所有基向量直接异或得到 $M$ 依赖当前的最简基底形式.
+]
+
+#property[线性与仿射][
+  `proj` 是线性映射, `proj_max` 是仿射映射:
+  $
+    g(x xor y)&=g(x) xor g(y), \
+    f(x xor y)&=f(x) xor f(y) xor M.
+  $
+  还满足混合关系
+  $
+    f(x xor y)&=f(x) xor g(y), \
+    g(x xor y)&=f(x) xor f(y).
+  $
+]
+
+#property[幂等与吸收][
+  $
+    g(g(x))&=g(f(x))=g(x), \
+    f(f(x))&=f(g(x))=f(x).
+  $
+]
+
+#property[异或类与可表示性][
+  $
+    g(x)=g(y)&arrow.l.r f(x)=f(y) arrow.l.r x xor y in V, \
+    x in V&arrow.l.r g(x)=0 arrow.l.r f(x)=M.
+  $
+]
+
+#property[第 $k$ 小值的线性性][
+  将 $V$ 中的不同元素升序排列, *包含零且下标从零开始*, 记第 $k$ 个值为 $h(k)$. 将非零基向量按主元从低到高排列为 $b_0,...,b_(r-1)$, 则
+  $ h(k)=xor.big_(j:k_j=1)b_j quad (0<=k<2^r), $
+  其中 $k_j$ 是 $k$ 的第 $j$ 个二进制位. 对 $0<=a,b<2^r$ 有
+  $ h(a xor b)=h(a) xor h(b). $
+]
+
+#property[表示方案数][
+  原序列有 $N$ 个位置, 维数为 $r$, 则不同的子集异或值共有 $2^r$ 种. 按下标区分子集, 有
+  $
+    op("cnt")(x)=cases(
+      2^(N-r) & g(x)=0,
+      0 & g(x)!=0.
+    )
+  $
+  上式包含空集; 若只统计非空子集, 仅在目标值为 $0$ 时将答案减一.
+]
+
+#property[插入与空间扩张][
+  记插入 `x` 后的空间为 $V'$, 以下 $V,f,g,M,r$ 均指插入前的状态. 若 $g(x)=0$, 则 $V'=V$, 维数不变; 否则
+  $ V'=V union {x xor v:v in V}, quad op("dim")(V')=r+1, $
+  且上述两部分不交, 空间大小恰好翻倍. 无论是否线性相关, 插入后的整个空间最大值均为
+  $ max V'=max(M,f(x)). $
+]
+
+=== 线性基求交: Zassenhaus 算法
+
+设两个线性基分别张成 $U,W$, 构造由二元增广行组成的空间
+$ H=op("span")({(u,u):u in U} union {(w,0):w in W}). $
+将第一组基向量以 `(x,x)` 插入, 第二组以 `(x,0)` 插入; 先消去第一分量, 再消去第二分量. 所得阶梯基中第一分量为 $0$ 的非零行, 其第二分量组成 $U ∩ W$ 的一组基.
+
+实现用两个 64 位整数保存增广行. `p[k*n+i]` 保存第 `k` 个分量的第 `i` 位主元行, `k=0,1` 分别对应第一、第二分量; 最后将第二组主元行的第二分量插回结果, 得到最简基底.
+
+#code-info(
+  [`Zassenhause::work(a,b)` 返回两个线性基张成空间的交的线性基, 要求两者位数相同且 $1<=n<=63$. 依赖 `LinearBasis` 和公共模板的 `VII`. 输入不变, 返回对象可继续调用 `proj/proj_max/insert/dim`. ],
+  [时间 $O(n^2)$ , 额外空间 $O(n)$. ],
+)
+#code-file("code/math/Zassenhaus.cpp")

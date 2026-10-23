@@ -6,4 +6,5 @@ void build(signed p,int l,int r){
   rc(p)=newnode(mid+1,r);
   build(lc(p),l,mid);
   build(rc(p),mid+1,r);
+  pushup(p);
 }

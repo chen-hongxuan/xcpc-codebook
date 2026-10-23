@@ -25,10 +25,11 @@ jobs:
         with:
           typst-version: 0.15.1
 
+      - name: Test heading preprocessing
+        run: python3 -m unittest discover -s tests
+
       - name: Compile PDF
-        run: |
-          mkdir -p dist
-          typst compile --root . --font-path fonts main.typ dist/xcpc-codebook.pdf
+        run: python3 scripts/build.py
 
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v7

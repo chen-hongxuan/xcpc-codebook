@@ -132,7 +132,7 @@
     footer: none,
   )[
     #set text(size: 8pt)
-    #set par(leading: 0.3em)
+    #set par(leading: 0.28em)
     #heading(level: 1, numbering: none, outlined: false)[目录 / Contents]
     #outline(title: none, depth: 3, indent: 1em)
   ]

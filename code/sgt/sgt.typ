@@ -20,11 +20,19 @@
   #code-file("code/sgt/normal/build.cpp")
 ]
 
-==== 修改
+==== 单点加
 
 #code-info(
   [`modify(root,x,d)` 将位置 $x$ 的权值增加 $d$ . 调用前须已完整建树并保证 $x$ 位于根区间; 若维护的不是区间和, 需要同步改写叶节点操作与 `pushup`. ],
   [单次时间和递归栈均为 $O(log U)$ . ],
+)
+#code-file("code/sgt/normal/add.cpp")
+
+==== 区间修改框架
+
+#code-info(
+  [`modify(root,L,R,d)` 是通用区间修改框架. 须按题意补齐整段修改处及 `pushdown`, 并保证 `pushup` 与维护信息一致; 例如区间加与区间和需将整段的 `val` 增加 `(r-l+1)*d`, 同时累计加法标记. 三参单点加为独立片段, 可按需组合. ],
+  [标记操作与合并为 $O(1)$ 时, 单次时间与递归栈为 $O(log U)$ . ],
 )
 #code-file("code/sgt/normal/modify.cpp")
 
@@ -35,6 +43,8 @@
   [单次时间和递归栈均为 $O(log U)$ . ],
 )
 #code-file("code/sgt/normal/query.cpp")
+
+若改为维护区间最大值: `pushup` 与查询合并均改为 `max`, 查询初值和不相交返回值改为 `-inf`; 区间加整段执行 `val+=d,tag+=d`, 下传同理; 单点取最大值只需下传到叶子后执行 `chmax(val,v)`. 若用 `-inf` 表示空状态, 节点初值也设为 `-inf`, 且加法更新跳过空状态.
 
 ==== 线段树二分
 
@@ -49,40 +59,6 @@
   [单次时间和递归栈均为 $O(log U)$ . ],
 )
 #code-file("code/sgt/normal/min_Left.cpp")
-
-=== 区间加与区间最大值
-
-==== 维护信息
-
-#code-info(
-  [沿用公共结构的节点池与儿子编号, 将 `node` 的 `val=0` 改为 `val=-inf`, `tag=0` 保留; 用下方成员替换公共结构的 `pushup/pushdown`, 再加入本节的修改与查询. 建树使用普通的 `build`, 创建的根及区间须已完整建立. `apply(p,v)` 给全部已有状态加 $v$ , 根的最大值为 `tr[p].val`. ],
-  [`apply/pushup/pushdown` 均为 $O(1)$ . 空状态保持 `-inf`, 以后新插入状态不受旧标记影响; 有限值及修改后值须严格大于 `-inf`, 中间运算不得溢出. ],
-)
-#code-file("code/sgt/maxadd/info.cpp")
-
-==== 单点取最大值
-
-#code-info(
-  [`change(p,x,v)` 将位置 $x$ 的值更新为与 $v$ 的最大值, 可初始化空位置; 要求 $x$ 位于根区间. ],
-  [单次时间与递归栈为 $O(log U)$ . ],
-)
-#code-file("code/sgt/maxadd/change.cpp")
-
-==== 区间加
-
-#code-info(
-  [`modify(p,L,R,v)` 给根区间与 $[L,R]$ 交集内已有状态加 $v$ , 空位置仍为空. ],
-  [单次时间与递归栈为 $O(log U)$ . ],
-)
-#code-file("code/sgt/maxadd/modify.cpp")
-
-==== 区间最大值
-
-#code-info(
-  [`query(p,L,R)` 返回根区间与 $[L,R]$ 交集的最大值, 空区间或没有可达状态时返回 `-inf`; 查询会下传标记. ],
-  [单次时间与递归栈为 $O(log U)$ . ],
-)
-#code-file("code/sgt/maxadd/query.cpp")
 
 === 动态开点线段树
 
@@ -145,7 +121,7 @@
 
 
 #code-info(
-  [`kth(p,q,k)` 返回版本差 $p-q$ 所表示多重集合中的第 $k$ 小下标, `kth(p,k)` 等价于令 $q=0$ . 要求各点版本差非负; 当 $k<=0$ 或 $k$ 大于总权值时返回 $-1$ . ],
+  [`kth(p,q,k)` 返回版本差 $p-q$ 所表示多重集合中的第 $k$ 小下标, `kth(p,k)` 等价于令 $q=0$ . 两个根须对应同一值域, 编号 $0$ 可作为空版本; 要求各点版本差非负. 当 $k<=0$ 或 $k$ 大于总权值时返回 $-1$ . ],
   [时间与递归栈均为 $O(log U)$ ; 查询下传懒标记时可能额外新增 $O(log U)$ 个节点. ],
 )
 #code-file("code/sgt/jtree/kth.cpp")

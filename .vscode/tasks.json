@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Codebook: watch",
+      "type": "process",
+      "command": "python3",
+      "args": ["${workspaceFolder}/scripts/build.py", "--watch"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "group": { "kind": "build", "isDefault": true },
+      "runOptions": { "instanceLimit": 1 },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": {
+        "owner": "codebook",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\[build\\] building$",
+          "endsPattern": "^\\[build\\] ready$"
+        }
+      }
+    },
+    {
+      "label": "Codebook: build",
+      "type": "process",
+      "command": "python3",
+      "args": ["${workspaceFolder}/scripts/build.py"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

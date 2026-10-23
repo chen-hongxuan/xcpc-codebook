@@ -1,12 +1,13 @@
-void modify(signed p,int x,int d){
+void modify(signed p,int L,int R,int d){
   int l=tr[p].l,r=tr[p].r;
-  if(l==r){
-    tr[p].val+=d;
+  if(L<=l&&r<=R){
+    //区间修改
     return;
   }
+  if(R<l||r<L)return;
   pushdown(p);
   int mid=(l+r)>>1;
-  if(x<=mid)modify(lc(p),x,d);
-  else modify(rc(p),x,d);
+  if(L<=mid)modify(lc(p),L,R,d);
+  if(mid<R)modify(rc(p),L,R,d);
   pushup(p);
 }

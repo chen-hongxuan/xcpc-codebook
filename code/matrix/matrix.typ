@@ -16,15 +16,13 @@
 )
 #code-file("code/matrix/multiply.cpp")
 
-=== 加法
+=== 其他运算
 
 #code-info(
   [`A+B` 返回逐项和, 两个矩阵的尺寸必须相同; 尺寸不同时返回空哨兵. ],
   [时间与结果空间均为 $O(n m)$ . ],
 )
 #code-file("code/matrix/add.cpp")
-
-=== 减法
 
 #code-info(
   [`A-B` 返回逐项差, 两个矩阵的尺寸必须相同; 尺寸不同时返回空哨兵. ],
@@ -33,8 +31,6 @@
 #code-file("code/matrix/subtract.cpp")
 
 #block(width: 100%, breakable: false)[
-  === `+=`
-
   #code-info(
     [`A+=B` 是 `A=A+B` 的简写并返回 `A` 的引用; 尺寸不同时把 `A` 置为空哨兵. 该 `friend` 运算符依赖加法片段. ],
     [时间与临时结果空间均为 $O(n m)$ . ],
@@ -43,8 +39,6 @@
 ]
 
 #block(width: 100%, breakable: false)[
-  === `-=`
-
   #code-info(
     [`A-=B` 是 `A=A-B` 的简写并返回 `A` 的引用; 尺寸不同时把 `A` 置为空哨兵. 该 `friend` 运算符依赖减法片段. ],
     [时间与临时结果空间均为 $O(n m)$ . ],
@@ -52,23 +46,19 @@
   #code-file("code/matrix/subtract-assign.cpp")
 ]
 
-#block(width: 100%, breakable: false)[
-  === `*=`
+#code-info(
+  [`A*x` 与 `x*A` 均返回矩阵的模意义数乘, 标量 $x$ 可以为负数. ],
+  [时间与结果空间均为 $O(n m)$ . ],
+)
+#code-file("code/matrix/scalar-multiply.cpp")
 
+#block(width: 100%, breakable: false)[
   #code-info(
     [`A*=B` 与 `A*=x` 分别是 `A=A*B` 与 `A=A*x` 的简写, 均返回 `A` 的引用. 矩阵右乘要求 `A.m==B.n`, 否则把 `A` 置为空哨兵. 该 `friend` 运算符依赖矩阵乘法与数乘片段. ],
     [$n times k$ 矩阵右乘 $k times m$ 矩阵的时间为 $O(n k m)$ , 数乘时间为 $O(n m)$ ; 临时结果空间均为 $O(n m)$ . ],
   )
   #code-file("code/matrix/multiply-assign.cpp")
 ]
-
-=== 矩阵数乘
-
-#code-info(
-  [`A*x` 与 `x*A` 均返回矩阵的模意义数乘, 标量 $x$ 可以为负数. ],
-  [时间与结果空间均为 $O(n m)$ . ],
-)
-#code-file("code/matrix/scalar-multiply.cpp")
 
 === 高斯消元
 

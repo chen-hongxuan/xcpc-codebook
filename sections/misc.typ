@@ -10,10 +10,6 @@
 )
 #code-file("code/math/mr.cpp")
 
-== 线性代数类
-
-#include "../code/matrix/matrix.typ"
-
 == 欧拉路径/回路
 
 #h(2em) *建图约定*: 图须连通、无自环, 允许重边, 点编号为 $1,...,n$ . 使用 `vector<VII> edge(n+1)`; 若 `edge[u][i]={v,j}`, 则须有 `edge[v][j]={u,i}`. `i,j` 是各自邻接表中从 $0$ 开始的下标.
@@ -284,6 +280,8 @@ $
 ]
 
 == 莫队算法
+
+#include "../code/mo/mo.typ"
 
 == 整体二分
 
