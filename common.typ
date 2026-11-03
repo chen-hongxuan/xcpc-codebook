@@ -1,5 +1,5 @@
 #import "@preview/theorion:0.6.0": *
-#import cosmos.fancy: *
+#import cosmos.simple: *
 #import "@preview/fletcher:0.5.8" as fletcher
 #import "template.typ" as base-template
 
