@@ -255,6 +255,130 @@
   对于 $n in NN$ 有 $ (a_1+...+a_k)^n=sum_(i_1+...+i_k=n) binom(n,i_1,...,i_k)a_1^(i_1)dot ...dot a_k^(i_k) $ 
 ]
 
+=== 常见组合恒等式
+
+未注明时, $n,m,r,s,t,b$ 均为非负整数. 对 $n>=0$, 约定 $k<0$ 或 $k>n$ 时 $binom(n,k)=0$, 空和为 $0$, $0^0=1$.
+下降幂、第二类斯特林数和指示函数 $I(P)$ 沿用前文定义.
+
+#let comb-id(title, body) = block(
+  width: 100%, breakable: false, above: 0pt, below: 0pt,
+)[#property(title, body)]
+
+#comb-id[基本关系][
+  $
+  &binom(n,k)=binom(n,n-k), \
+  &binom(n,k)=binom(n-1,k)+binom(n-1,k-1) quad (n>=1).
+  $
+]
+
+#comb-id[吸收与拆分][
+  前两式要求 $n>=1$; 第三式要求 $0<=r<=k<=n$.
+  $
+  &k binom(n,k)=n binom(n-1,k-1), \
+  &(n-k)binom(n,k)=n binom(n-1,k), \
+  &binom(n,k)binom(k,r)=binom(n,r)binom(n-r,k-r).
+  $
+  常用于提取权重、先选子集再选其中的标记元素.
+]
+
+#comb-id[二项式行和][
+  $
+  &sum_(k=0)^n binom(n,k)=2^n, \
+  &sum_(k=0)^n (-1)^k binom(n,k)=I(n=0), \
+  &sum_(0<=k<=n, 2 divides k) binom(n,k)
+    =sum_(0<=k<=n, 2 divides.not k) binom(n,k)=2^(n-1) quad (n>=1).
+  $
+]
+
+#comb-id[曲棍球棒与对角卷积][
+  $
+  &sum_(k=r)^n binom(k,r)=binom(n+1,r+1) quad (n>=r), \
+  &sum_(k=0)^n binom(k,r)binom(n-k,s)=binom(n+1,r+s+1).
+  $
+]
+
+#comb-id[范德蒙德卷积][
+  $
+  &sum_(k=0)^r binom(n,k)binom(m,r-k)=binom(n+m,r), \
+  &sum_(k=0)^(min(n,m)) binom(n,k)binom(m,k)=binom(n+m,n), \
+  &sum_(k=0)^n binom(n,k)^2=binom(2n,n).
+  $
+  将两组元素合并后选取, 常用于消去一层组合数求和.
+]
+
+#comb-id[带标记组合数求和][
+  要求 $0<=r<=n$.
+  $
+  &sum_(k=r)^n binom(n,k)binom(k,r)=binom(n,r)2^(n-r), \
+  &sum_(k=r)^n (-1)^(k-r)binom(n,k)binom(k,r)=I(n=r).
+  $
+]
+
+#comb-id[交错求和][
+  $
+  &sum_(k=0)^m (-1)^k binom(n,k)=(-1)^m binom(n-1,m) quad (n>=1), \
+  &sum_(k=0)^n (-1)^k binom(n,k)binom(m+k,r)=(-1)^n binom(m,r-n).
+  $
+]
+
+#comb-id[加权二项式和][
+  $
+  &sum_(k=0)^n k binom(n,k)=n 2^(n-1) quad (n>=1), \
+  &sum_(k=0)^n k^2 binom(n,k)=n(n+1)2^(n-2) quad (n>=2), \
+  &sum_(k=t)^n k^underline(t)binom(n,k)x^(k-t) \
+  &quad =n^underline(t)(1+x)^(n-t) quad (0<=t<=n).
+  $
+  对二项式定理求导可得到下降幂权重; 再转为普通幂.
+]
+
+#comb-id[幂次和与高阶差分][
+  $
+  &sum_(k=0)^n binom(n,k)k^r \
+  &quad =sum_(j=0)^(min(n,r)) stl2(r,j)n^underline(j)2^(n-j), \
+  &sum_(k=0)^n (-1)^(n-k)binom(n,k)k^r=n!stl2(r,n).
+  $
+  第二式在 $r<n$ 时为 $0$, 在 $r=n$ 时为 $n!$.
+  更一般地, 若多项式 $P$ 的次数小于 $n$, 则
+  $ sum_(k=0)^n (-1)^(n-k)binom(n,k)P(k)=0. $
+]
+
+#comb-id[倒数加权和][
+  $
+  &sum_(k=0)^n binom(n,k)/(k+1)=(2^(n+1)-1)/(n+1), \
+  &sum_(k=0)^n (-1)^k binom(n,k)/(k+1)=1/(n+1).
+  $
+]
+
+#comb-id[生成函数与组合卷积][
+  第一式按形式幂级数理解, 要求 $m>=1$; 第二式中 $a,b$ 为任意数列.
+  $
+  &(1-x)^(-m)=sum_(k>=0)binom(m+k-1,k)x^k, \
+  &sum_(k=0)^n binom(n,k)a_k b_(n-k) \
+  &quad =n!sum_(k=0)^n (a_k)/(k!) (b_(n-k))/((n-k)!).
+  $
+  将数列除以阶乘后做普通卷积, 再乘回阶乘, 即得二项式卷积.
+]
+
+#comb-id[有上界的隔板计数][
+  对 $n>=1$, $x_1+...+x_n=m$ 且 $0<=x_i<=b$ 的整数解数为
+  $
+  N=sum_(j=0)^(min(n, floor(m/(b+1))))
+    (-1)^j binom(n,j)binom(m-j(b+1)+n-1,n-1).
+  $
+  有下界时先平移变量, 再对违反上界的变量容斥.
+]
+
+#v(3pt)
+含除法的等式用于取模时, 只有分母与模数互质才可直接使用逆元; 整数商也可先约分后计算.
+
+#text(size: 6pt)[
+  参考: #link("https://dlmf.nist.gov/1.2")[DLMF §1.2],
+  #link("https://dlmf.nist.gov/26.3")[§26.3],
+  #link("https://dlmf.nist.gov/26.8")[§26.8],
+  #link("https://cp-algorithms.com/combinatorics/binomial-coefficients.html")[CP-Algorithms: Binomial Coefficients],
+  #link("https://cp-algorithms.com/combinatorics/inclusion-exclusion.html")[Inclusion-Exclusion].
+]
+
 === Lucas 定理
 
 #h(2em) 对于质数 $p$ 而言, 我们可以快速求出组合数对 $p$ 取余数的结果.
@@ -263,6 +387,222 @@
 ]
 
 === 生成函数
+
+==== 定义与约定
+
+以下将 $x$ 视为形式符号, 按特征零的域上的形式幂级数运算, 不要求数值收敛.
+求 $0..N$ 次项时模 $x^(N+1)$ 截断. 模意义下可取奇质数 $p$ 且 $N<p$, 保证下述阶乘及整数分母可逆;
+此条件须覆盖运算所需的最高次数.
+
+#table(
+  columns: (0.6fr, 1.9fr, 1.1fr),
+  stroke: 0.35pt + luma(150), inset: 2pt, align: center,
+  table.header([*类型*], [*定义*], [*取答案*]),
+  [OGF], [$F(x)=sum_(n>=0)a_n x^n$], [$a_n=[x^n]F$],
+  [EGF], [$A(x)=sum_(n>=0)a_n x^n/n!$], [$a_n=n![x^n]A$],
+)
+#v(2pt)
+
+结合卷积系数选择表示方式: 普通卷积用 OGF; 带标号分配系数 $binom(n,k)$ 的卷积常用 EGF.
+所有系数下标从 $0$ 开始, 负下标项为 $0$.
+
+#property[运算条件与精度][
+  求逆要求 $F(0)!=0$; 形式 $ln F$ 要求 $F(0)=1$; $exp A$ 要求 $A(0)=0$.
+  一般的复合 $F(G(x))$ 要求 $G(0)=0$, 外层 $F$ 为多项式时不受此限制.
+  要得到导数的 $0..N$ 次项, 原级数须已知到 $N+1$ 次.
+]
+
+==== 基本运算速查
+
+下表固定 $F(x)=sum_(n>=0)a_n x^n$ 为 *OGF*, $s>=0,d>=1$.
+
+#table(
+  columns: (1.25fr, 1.55fr),
+  stroke: 0.35pt + luma(150), inset: 2pt, align: center,
+  table.header([*生成函数*], [*对应序列的第 $n$ 项*]),
+  [$x^s F(x)$], [$a_(n-s)$],
+  [$(F(x)-sum_(j=0)^(s-1)a_j x^j)/x^s$], [$a_(n+s)$],
+  [$F(c x)$], [$c^n a_n$],
+  [$F(x^d)$], [第 $d n$ 项为 $a_n$, 其余为 $0$],
+  [$F(x)/(1-x)$], [$sum_(j=0)^n a_j$],
+  [$(1-x)F(x)$], [$a_n-a_(n-1)$],
+  [$F'(x)$], [$(n+1)a_(n+1)$],
+  [$x F'(x)$], [$n a_n$],
+  [$integral_0^x F(t) dif t$], [$a_(n-1)/n$ ($n>=1$), 常数项 $0$],
+)
+#v(2pt)
+
+#property[卷积、EGF 移位与奇偶筛选][
+  令 $G=sum b_n x^n$, $A=sum a_n x^n/n!$, $B=sum b_n x^n/n!$, 则
+  $
+  &[x^n](F G)=sum_(k=0)^n a_k b_(n-k), \
+  &n![x^n](A B)=sum_(k=0)^n binom(n,k)a_k b_(n-k), \
+  &A'(x)=sum_(n>=0)a_(n+1)x^n/n!, \
+  &integral_0^x A(t) dif t=sum_(n>=1)a_(n-1)x^n/n!.
+  $
+  EGF 乘 $x^s$ 对应 $n^underline(s)a_(n-s)$ ($n>=s$), 更低项为 $0$.
+  对 OGF、EGF 均可用 $(F(x)+F(-x))/2$ 保留偶次项,
+  $(F(x)-F(-x))/2$ 保留奇次项; 次数保持原样.
+]
+
+==== 常用展开与封闭形式
+
+表内 $n>=0$, 有常数项的例外单独注明. $(1+x)^alpha$ 的常数项取 $1$.
+
+#table(
+  columns: (1.15fr, 1.15fr, 0.7fr),
+  stroke: 0.35pt + luma(150), inset: 2pt, align: center,
+  table.header([*函数 $F(x)$*], [*$[x^n]F(x)$*], [*条件*]),
+  [$1/(1-c x)$], [$c^n$], [无],
+  [$1/(1-x)^m$], [$binom(m+n-1,n)$], [$m>=1$ 为整数],
+  [$x/(1-x)^2$], [$n$], [无],
+  [$x(1+x)/(1-x)^3$], [$n^2$], [无],
+  [$(1+x)^alpha$], [$alpha^underline(n)/n!$], [广义二项式],
+  [$exp(c x)$], [$c^n/n!$], [无],
+  [$-ln(1-x)$], [$1/n$], [$n>=1$; 常数 $0$],
+  [$ln(1+x)$], [$(-1)^(n-1)/n$], [$n>=1$; 常数 $0$],
+)
+#v(2pt)
+
+这里的广义组合数定义为 $binom(alpha,n)=alpha^underline(n)/n!$, 允许负上标.
+特别地, 对整数 $m>=1$ 有
+$ binom(-m,n)=(-1)^n binom(m+n-1,n). $
+前文非负整数上标的越界置零约定不适用于负上标.
+模质数 $p$ 时, 组合数上标 $>=p$ 不能直接套含有 $p!$ 的阶乘逆元公式, 可参考 Lucas 定理.
+
+==== OGF 计数模型
+
+对重量为 $w>=1$ 的一种物品, 其数量限制对应以下因子.
+要求 $0<=L<=U$, $m>=1$, $0<=r<m$, 所有这些参数均为整数.
+
+#table(
+  columns: (1fr, 1.6fr),
+  stroke: 0.35pt + luma(150), inset: 2pt, align: center,
+  table.header([*允许的取用数量*], [*生成函数因子*]),
+  [$0$ 或 $1$], [$1+x^w$],
+  [任意非负整数], [$1/(1-x^w)$],
+  [恰好 $L$ 个], [$x^(L w)$],
+  [$L..U$ 个], [$x^(L w)(1-x^((U-L+1)w))/(1-x^w)$],
+  [数量 $equiv r (mod m)$], [$x^(r w)/(1-x^(m w))$],
+)
+#v(2pt)
+
+各类型独立选择时相乘, 总重量为 $S$ 的方案数是 $[x^S]product_i F_i(x)$.
+例如无限硬币取 $product_i (1-x^(w_i))^(-1)$, 每种至多一枚取 $product_i (1+x^(w_i))$.
+
+#property[有序序列][
+  若非空部件的 OGF 是 $F$, 即 $F(0)=0$, 则
+  $
+  &"恰好 " k " 个有序部件": quad F^k, \
+  &"任意个有序部件": quad sum_(k>=0)F^k=1/(1-F), \
+  &"至少一个有序部件": quad F/(1-F).
+  $
+  序列记录部件的先后顺序; 独立选择每种物品的乘积模型记录各类型的数量.
+]
+
+==== EGF 计数模型
+
+以下原子均带标号, 各部件使用互不相交的标号集合.
+设一种 *非空* 部件的 EGF 为 $A$, 满足 $A(0)=0$.
+表内 $k$ 为非负整数, 环模型要求 $k>=1$.
+
+#table(
+  columns: (1.6fr, 1fr),
+  stroke: 0.35pt + luma(150), inset: 2pt, align: center,
+  table.header([*组合结构*], [*EGF*]),
+  [恰好 $k$ 个有序部件], [$A^k$],
+  [恰好 $k$ 个无序部件], [$A^k/k!$],
+  [任意个无序部件], [$exp A$],
+  [任意个有序部件], [$1/(1-A)$],
+  [恰好 $k$ 个部件组成一个环], [$A^k/k$],
+  [任意正数个部件组成一个环], [$-ln(1-A)$],
+  [在结构中标记一个原子], [$x A'(x)$],
+)
+#v(2pt)
+
+环仅将旋转视为相同, 翻转仍不同. 无序部件的 $k!$ 来自标号集合分配后的去重,
+不能直接套给一般无标号 OGF. 从表中表达式取出 $x^n$ 系数后, 均须乘回 $n!$.
+固定 $k$ 个非空部件时, 若 $n<k$ 则直接返回 $0$; 其余情况才需计算 $k!$ 或 $k$ 的逆元.
+若还要记录无序部件数, 使用 $exp(y A(x))$, 答案为 $n![x^n y^k]exp(y A(x))$.
+
+#property[集合划分、置换与连通图][
+  集合划分的部件是非空集合, 故取 $A=exp x-1$:
+  $
+  &stl2(n,k)=n![x^n](exp x-1)^k/k!, \
+  &sum_(k=0)^n stl2(n,k)=n![x^n]exp(exp x-1).
+  $
+  置换是置换环的无序集合, 环的 EGF 为 $-ln(1-x)$.
+  禁止长度 $1$ 的环即得错排数的 EGF $exp(-x)/(1-x)$.
+  对带标号简单无向图, 令
+  $
+  G(x)=sum_(n>=0)2^binom(n,2)x^n/n!,
+  $
+  则非空连通图的 EGF 为 $ln G(x)$, 一般图由连通分量作无序集合得到.
+]
+
+==== 递推与生成函数方程
+
+#property[常系数线性递推][
+  已知 $a_0,..,a_(d-1)$, 且 $a_n=sum_(i=1)^d c_i a_(n-i)$ ($n>=d$, $d>=1$), 则 OGF 满足
+  $
+  &Q(x)=1-sum_(i=1)^d c_i x^i, \
+  &P(x)=sum_(j=0)^(d-1)(a_j-sum_(i=1)^j c_i a_(j-i))x^j, \
+  &F(x)=P(x)/Q(x).
+  $
+  分子由初值决定. 例如 $a_0=0,a_1=1,a_n=a_(n-1)+a_(n-2)$ 时 $F=x/(1-x-x^2)$.
+]
+
+#property[卷积递推与递归结构][
+  若 $f_n=b_n+sum_(i=1)^n g_i f_(n-i)$, 取 OGF $F,B,G$ 且 $g_0=0$, 则
+  $ F=B+G F quad => quad F=B/(1-G). $
+  自卷积产生非线性方程, 例如卡特兰数的 OGF:
+  $
+  &C=1+x C^2, quad C(0)=1, \
+  &C=(1-sqrt(1-4x))/(2x).
+  $
+  平方根取常数项为 $1$ 的分支. 带标号有根树由根和若干无序子树构成, 其 EGF 满足
+  $ T=x exp T, quad T(0)=0. $
+  由下述反演可得 $n>=1$ 时树数为 $n^(n-1)$.
+]
+
+#note-box[
+  *与多项式代码衔接:* 求 $0..N$ 次项的形式商 $B/A$, 先将分母补零到 $N+1$ 项,
+  用 #raw("A.inverse()") 后乘以 #raw("B"), 再截断; 当前 #raw("poly") 的 #raw("/") 是多项式带余除法.
+  #raw("power")、#raw("sqrt") 的基础版本要求常数项为 $1$.
+  $F=B+x^k F^2$ ($k>=1$) 可直接使用“在线卷积”片段.
+]
+
+==== Lagrange 反演
+
+#theorem[隐式方程取系数][
+  设 $T=x phi(T)$, $phi(0)!=0$, 则存在唯一满足 $T(0)=0$ 的形式解.
+  对任意形式幂级数 $H$ 及整数 $n>=1$,
+  $
+  [x^n]H(T(x))=1/n [t^(n-1)]H'(t)phi(t)^n.
+  $
+  特别地, 对 $n>=k>=1$ 有
+  $
+  [x^n]T(x)^k=k/n [t^(n-k)]phi(t)^n.
+  $
+  $n=0$ 时直接取 $H(0)$; $k>n$ 时 $[x^n]T^k=0$.
+]
+
+#example[代入二项式][
+  若 $T=x(1+T)^m$, $m>=1$ 为整数, 则对 $n>=k>=1$,
+  $ [x^n]T^k=k/n binom(m n,n-k). $
+  将隐式递推转成一次幂及取系数, 不必先求出整个 $T$.
+]
+
+#v(2pt)
+#text(size: 6pt)[
+  参考: OI Wiki
+  #link("https://oi-wiki.org/math/poly/intro/")[简介],
+  #link("https://oi-wiki.org/math/poly/ogf/")[OGF],
+  #link("https://oi-wiki.org/math/poly/egf/")[EGF],
+  #link("https://oi-wiki.org/math/poly/lagrange-inversion/")[Lagrange 反演].
+  辅助阅读: #link("https://www.cnblogs.com/bykem/p/20097078")[Phartial 多项式笔记],
+  #link("https://q779.cn/2024/01/31/sheng-cheng-han-shu-xue-xi-bi-ji/")[Q779 生成函数笔记].
+]
 
 == 博弈论
 
@@ -695,7 +1035,7 @@ $
 )
 #code-file("code/math/linearBasis.cpp")
 
-=== 性质与结论
+===& 性质与结论
 
 以下固定满足上述主元条件的基底, 记其张成的空间为 $V$, 维数为 $r$. 查询以 $x$ 为初值, 允许再异或零个或多个基向量, 记
 $

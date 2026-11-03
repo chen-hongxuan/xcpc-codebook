@@ -1,6 +1,6 @@
 #import "../../common.typ": *
 
-=== 主体框架
+===& 主体框架
 
 #code-info(
   [`matrix()` 建立空哨兵; `matrix(n,m,v)` 建立 $n times m$ 常数矩阵; `matrix(n)` 建立 $n$ 阶单位阵; `a/n/m` 保存元素与尺寸, `operator[]` 提供行访问. 将 `_P_` 换成质数模数, 直接写入的元素须位于 `[0,mo)`, 再把需要的成员函数片段放入结构体预留位置. ],
@@ -16,7 +16,7 @@
 )
 #code-file("code/matrix/multiply.cpp")
 
-=== 其他运算
+===& 其他运算
 
 #code-info(
   [`A+B` 返回逐项和, 两个矩阵的尺寸必须相同; 尺寸不同时返回空哨兵. ],
