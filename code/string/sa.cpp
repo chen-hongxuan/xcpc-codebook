@@ -1,6 +1,6 @@
 namespace sa{
-  vector<VI> work(string &s,VI &sa,int opt){
-    vector<VI> rk={sa=VI(s.size(),0)};
+  VVI work(string &s,VI &sa,int opt){
+    VVI rk={sa=VI(s.size(),0)};
     for(int i=0;i<s.size();++i){
       sa[i]=i,rk[0][i]=s[i]-'a'+1;
     }

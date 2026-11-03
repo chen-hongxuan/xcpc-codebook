@@ -5,7 +5,7 @@ struct VirtualTree{
   int root;
   VirtualTree(VI &DFN,VI &DEP,F f,int rt):
   dfn(DFN),dep(DEP),lca(move(f)),root(rt){}
-  int work(VI Nd,vector<VI> &tree,VI &lnk){
+  int work(VI Nd,VVI &tree,VI &lnk){
     lnk={-1,root},tree={{},{}};
     VI stk={1};
     int top=0,pool=1;

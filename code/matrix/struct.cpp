@@ -1,6 +1,6 @@
 struct matrix{
   static constexpr int mo=_P_;
-  vector<VI> a;
+  VVI a;
   int n=0,m=0;
 
   static inline void red(int &x){if(x>=mo)x-=mo;}

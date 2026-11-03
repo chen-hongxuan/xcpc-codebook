@@ -6,7 +6,7 @@ struct matrix{
     for(;t;t>>=1,x=x*x%mo)if(t&1)ret=ret*x%mo;
     return ret;
   }
-  vector<VI> a;
+  VVI a;
   int n,m;
   matrix():a{}{}
   matrix(int _n,int _m,int v=0):n(_n),m(_m){

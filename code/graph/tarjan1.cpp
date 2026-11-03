@@ -1,5 +1,5 @@
 namespace tarjan{
-  int work(int n,vector<VI> &edge,VI &color){
+  int work(int n,VVI &edge,VI &color){
     int dfntot=0,coltot=0;
     vector<int> dfn,low,vis;
     stack<int> sta;

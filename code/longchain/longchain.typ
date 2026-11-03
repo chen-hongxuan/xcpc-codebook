@@ -5,7 +5,7 @@
 #h(2em) 长儿子 `son[u]` 按子树高度选择, `h[u]` 为从 $u$ 出发的最长向下路径的点数. 公共结构只维护树和链的信息, DP 状态由调用者保存. 将下方 `init` 放入预留位置, 即可用于普通 `VI` 的长剖 DP.
 
 #code-info(
-  [`init(edge,root=1)` 处理点编号为 $1,...,n$ 的连通树, `edge` 为双向加入无向边的 `vector<VI>`. 生成 `fa,h,son,ord,bel,head`; `ord` 中父亲在儿子之前, `bel[u]` 是从 $0$ 开始的链编号, `head[id]` 为对应链头. ],
+  [`init(edge,root=1)` 处理点编号为 $1,...,n$ 的连通树, `edge` 为双向加入无向边的 `VVI`. 生成 `fa,h,son,ord,bel,head`; `ord` 中父亲在儿子之前, `bel[u]` 是从 $0$ 开始的链编号, `head[id]` 为对应链头. ],
   [时间、额外空间均为 $O(n)$ ; 使用迭代遍历, 所有长链的长度之和为 $n$ . ],
 )
 #code-file("code/longchain/struct.cpp")
@@ -52,7 +52,7 @@ $ p=x-"off"[u]-c["bel"[u]].l. $
 
 #h(2em) 使用映射模块时, 按链编号创建外部存储. 数组接法如下, 初始值按题意设置:
 ```cpp
-vector<VI> f(lc.head.size());
+VVI f(lc.head.size());
 for(int id=0;id<f.size();++id)
   f[id].assign(lc.c[id].w,0);
 //逻辑下标x的值: f[lc.bel[u]][lc.pos(u,x)]

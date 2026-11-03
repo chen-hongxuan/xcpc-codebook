@@ -16,6 +16,7 @@
 #include "sections/string.typ"
 #include "sections/graph.typ"
 #include "sections/flow.typ"
+// 线段树及调用样例: code/newsgt/sgt.typ
 #include "sections/data-structure.typ"
 #include "sections/math.typ"
 #include "sections/misc.typ"

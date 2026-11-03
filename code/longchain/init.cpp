@@ -1,4 +1,4 @@
-void init(const vector<VI> &edge,int root=1){
+void init(const VVI &edge,int root=1){
   int n=edge.size()-1;
   fa.assign(n+1,0),h.assign(n+1,1);
   son.assign(n+1,0),bel.assign(n+1,0);

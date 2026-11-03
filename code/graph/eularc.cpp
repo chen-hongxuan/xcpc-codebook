@@ -1,7 +1,7 @@
 namespace EularGraph{
   VI Hierholzer(int n,vector<VII> &edge){//无自环
     VI last(n+1,0),stk;
-    vector<VI> vis(n+1);
+    VVI vis(n+1);
     for(int i=1;i<=n;++i){
       vis[i].assign(edge[i].size(),0);
     }
@@ -25,7 +25,7 @@ namespace EularGraph{
     reverse(stk.begin(),stk.end());
     return stk;
   }
-  vector<VI> ex_Hierholzer(int n,vector<VII> &edge){
+  VVI ex_Hierholzer(int n,vector<VII> &edge){
     vector<VII> E=edge;
     E.push_back({});
     int odddeg=0;
@@ -38,7 +38,7 @@ namespace EularGraph{
       }
     }
     VI path=Hierholzer(n+odddeg,E),tmp={};
-    vector<VI> ret;
+    VVI ret;
     for(int x:path){
       if(x==n+1){
         if(tmp.size()){

@@ -2,6 +2,8 @@
 
 #define int long long
 #define VI vector<int>
+#define VVI vector<VI>
+#define VVVI vector<VVI>
 #define VII vector<array<int,2>>
 #define VIII vector<array<int,3>>
 
@@ -29,9 +31,9 @@ inline void write(int x,char ch=0){
   if(ch)putchar(ch);
 }
 template<class T>
-inline void chmin(T &x,T y){x>y?x=y:y;}
+inline void chmin(T &x,T y){x>y?x=y:x;}
 template<class T>
-inline void chmax(T &x,T y){x<y?x=y:y;}
+inline void chmax(T &x,T y){x<y?x=y:x;}
 
 const int mo=998244353,inf=1e15;
 const double pi=acos(-1);

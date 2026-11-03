@@ -3,7 +3,7 @@ struct Min25_sieve{
   static constexpr int mo=_MOD_;
   int n,sqn;
   VI sym,w;
-  vector<VI> g;
+  VVI g;
   A S_pow;B f_pk;
   Min25_sieve(VI p,A s,B f):
   sym(move(p)),S_pow(move(s)),f_pk(move(f)){}

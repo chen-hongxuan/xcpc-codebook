@@ -36,7 +36,7 @@
 // )
 // #code-file("code/data-structure/sgtBisearch.cpp")
 
-#include "../code/sgt/sgt.typ"
+#include "../code/newsgt/sgt.typ"
 
 === 势能线段树
 
@@ -95,7 +95,7 @@ $
   [`build(a)` 由下标从 $1$ 开始的数组建树, 并把初始数组计作第一个版本. `modify(l,r,mul,add)` 执行 $a_i <- m a_i+b$ , 其中 $m,b$ 分别是参数 `mul,add`; 区间乘 $v$ 使用 `(v,0)`, 区间加 $v$ 使用 `(1,v)`. `compose()` 将整个当前数组计入一次历史; 若每次修改都产生新版本, 应在每次 `modify` 后调用它. `query1/query2(l,r)` 分别查询当前区间和与所有已计入版本的区间和. ],
   [`build` 为 $O(n)$ 时间与空间; `modify` 、`query1` 、`query2` 均为 $O(log n)$ , `compose` 为 $O(1)$ . 乘数须为正数, 且代码不取模, 所有中间结果必须能由 `int` 承载. ],
 )
-#code-file("code/sgt/history.cpp")
+#code-file("code/newsgt/history.cpp")
 
 == FHQ_Treap
 

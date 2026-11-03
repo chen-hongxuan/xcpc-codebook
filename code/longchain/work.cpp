@@ -1,7 +1,7 @@
 //f[u]倒序存储: 距离k对应f[u].size()-1-k
 LongChain lc;
 lc.init(edge);
-vector<VI> f(n+1);
+VVI f(n+1);
 VI ans(n+1);
 for(int i=n-1;i>=0;--i){
   int u=lc.ord[i],s=lc.son[u];
