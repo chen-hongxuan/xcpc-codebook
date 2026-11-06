@@ -126,3 +126,25 @@
 )
 #code-file("code/newsgt/jtree/range-kth.cpp")
 ]
+
+#block(width: 100%, breakable: false)[
+  === 李超线段树
+
+  #[
+    #set par(leading: 0.35em)
+    #code-info(
+      [`LiChaoSegmentTree(L,R)` 建立整数横坐标域 $[L,R]$ 的空树。`insert(xa,ya,xb,yb)` 插入线段并返回从 `1` 开始的编号，竖直线段取较高端点。`query(x)` 返回 `{最大纵坐标,线段编号}`，同高取最小编号，空查询或越界返回 `{-finf,0}`。],
+      [令 $U=R-L+1$，插入线段为 $O(log^2(U+1))$，单点查询为 $O(log(U+1))$。插入 $M$ 条线段后，空间为 $O(M+min(U,M log(U+1)))$。],
+    )
+
+    插入时把线段的横坐标范围分解为树上的整段。每个节点保留在中点更优的线段，另一条只有在某侧端点更优时才递归进入该侧。节点池和线段编号各对象独立。整数坐标的绝对值不超过 $10^12$ 时，交叉相乘可用 `__int128` 精确比较。
+  ]
+
+  #code-file("code/newsgt/lichao.cpp")
+
+  ```cpp
+  LiChaoSegmentTree t(1,10);
+  t.insert(1,2,3,4);
+  auto [y,id]=t.query(2); // y=3, id=1
+  ```
+]

@@ -8,6 +8,7 @@
 #define VIII vector<array<int,3>>
 
 using namespace std;
+using ld=long double;
 
 inline int read(){
   int x=0,f=1;char ch=getchar();
@@ -36,6 +37,7 @@ template<class T>
 inline void chmax(T &x,T y){x<y?x=y:x;}
 
 const int mo=998244353,inf=1e15;
+const ld finf=numeric_limits<ld>::infinity();
 const double pi=acos(-1);
 
 mt19937 rnd(time(0));

@@ -19,6 +19,7 @@
 // 线段树及调用样例: code/newsgt/sgt.typ
 #include "sections/data-structure.typ"
 #include "sections/math.typ"
+#include "sections/geometry.typ"
 #include "sections/misc.typ"
 #include "sections/stl.typ"
 #include "sections/checklist.typ"

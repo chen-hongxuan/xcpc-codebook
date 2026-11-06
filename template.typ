@@ -13,9 +13,14 @@
   }
 }
 
-#let code-file(path, lang: "cpp", highlights: ()) = {
+#let code-file(path, lang: "cpp", highlights: (), part: none) = {
+  let source = read(path)
+  if part != none {
+    let start = "// codebook: " + part + "\n"
+    source = source.split(start).at(1).split("\n// codebook: ").first().trim("\n")
+  }
   show raw.line: it => code-line(it, highlights: highlights)
-  raw(read(path), lang: lang, block: true)
+  raw(source, lang: lang, block: true)
 }
 
 #let note-box(body) = block(
