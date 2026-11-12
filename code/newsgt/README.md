@@ -11,6 +11,8 @@
 - `jtree/`：主席树片段，每个对象代表一个版本，可用外部 `vector<SegmentTree>` 保存。
 - `example.cpp`、`normal/example.cpp`、`jtree/example.cpp`：三种组合的使用示例。
 - `jtree/range-kth.cpp`：可直接放入 `solve()` 的静态区间第 k 小调用样例，包含离散化和原值还原。
+- `lichao.cpp`：李超树的 `Line`、节点池、比较函数及带预留位置的基础结构。
+- `lichao/`：李超树的核心插入、范围插入、合并、持久化插入、查询和调用样例，各功能独立存放。
 - `preview.typ`：独立预览完整章节，沿用现有 A4 双栏版式。
 - `sgt.typ`：正式代码本使用的线段树章节，所有代码引用已指向本目录。
 - `origin/`：复制保留的历史代码，不参与当前主体的组装和预览。
@@ -46,6 +48,26 @@
 
 当前实现维护单点加与区间和，不使用懒标记。`pushdown` 保留扩展位置；
 扩展区间修改时，需要自行补齐标记及动态开点规则。
+
+## 李超线段树的组合
+
+保留 `lichao.cpp` 中的 `Line` 和 `LiChaoSegmentTree` 基础结构，
+将所需成员函数片段放入预留位置：
+
+- 插入：加入 `lichao/add.cpp` 和 `lichao/insert.cpp`。
+- 合并：加入 `lichao/add.cpp` 和 `lichao/merge.cpp`，使用 `a.merge(b)`；
+  两对象须不同且值域相同，合并后 `b` 为空，原线段编号及有效范围保留。
+- 查询：加入 `lichao/query.cpp`，只依赖基础结构中的 `better`。
+- 普通版本完整使用：加入上述四个片段，再将 `lichao/example.cpp` 放在结构体外。
+- 可持久化：加入 `lichao/jadd.cpp`、`lichao/jinsert.cpp` 和同一份 `lichao/query.cpp`；
+  使用 `auto b=a.jinsert(...)` 派生新版本，调用方式见 `lichao/jexample.cpp`。
+  新线分配一个全局编号，复制旧节点时保留原编号。
+
+沿用基础模板的 `#define int long long` 和 `finf`。各对象共用节点池与线段编号，
+每个对象只有一个根；对象通过 `move` 转移。
+`LiChaoSegmentTree::clear()` 只在所有对象及版本均不再使用时调用。
+持久化版本之间共享节点，派生版本后只通过 `jinsert` 修改；
+普通 `insert/add/merge` 会原地修改节点，不能用来更新这些共享版本。
 
 ## 验证与预览
 

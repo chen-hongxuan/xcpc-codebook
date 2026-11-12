@@ -127,24 +127,89 @@
 #code-file("code/newsgt/jtree/range-kth.cpp")
 ]
 
+=== 李超线段树
+
 #block(width: 100%, breakable: false)[
-  === 李超线段树
+====& 元素
 
-  #[
-    #set par(leading: 0.35em)
-    #code-info(
-      [`LiChaoSegmentTree(L,R)` 建立整数横坐标域 $[L,R]$ 的空树。`insert(xa,ya,xb,yb)` 插入线段并返回从 `1` 开始的编号，竖直线段取较高端点。`query(x)` 返回 `{最大纵坐标,线段编号}`，同高取最小编号，空查询或越界返回 `{-finf,0}`。],
-      [令 $U=R-L+1$，插入线段为 $O(log^2(U+1))$，单点查询为 $O(log(U+1))$。插入 $M$ 条线段后，空间为 $O(M+min(U,M log(U+1)))$。],
-    )
+#code-info(
+  [`Line(xa,ya,xb,yb)` 用两个端点表示所在直线，`Line(k,b)` 表示 $y=k x+b$，`f(x)` 求函数值。构造后的 `id=0`，由插入接口分配正编号。直接调用 `f` 要求两端点横坐标不同。],
+  [构造与求值均为 $O(1)$。],
+)
+#code-file("code/newsgt/lichao.cpp", part: "line")
+]
 
-    插入时把线段的横坐标范围分解为树上的整段。每个节点保留在中点更优的线段，另一条只有在某侧端点更优时才递归进入该侧。节点池和线段编号各对象独立。整数坐标的绝对值不超过 $10^12$ 时，交叉相乘可用 `__int128` 精确比较。
-  ]
+====& 基础结构
 
-  #code-file("code/newsgt/lichao.cpp")
+#code-info(
+  [`LiChaoSegmentTree(L,R)` 建立整数横坐标域 $[L,R]$ 的空树。节点保存候选函数 `val`、左右孩子和自身范围。各对象共用节点池与编号计数器，每个对象只有一个根。沿用基础模板的 `#define int long long`，中点采用 `(l+r)>>1`。将所需成员片段放入本体预留位置；`better` 为共用比较函数，`clone(p)` 复制已有节点并保留孩子编号。],
+  [构造与移动为 $O(1)$，新建节点均摊 $O(1)$；空间为 $O(P)$，$P$ 为共享池累计分配节点数。],
+)
+#code-file("code/newsgt/lichao.cpp", part: "tree")
 
-  ```cpp
-  LiChaoSegmentTree t(1,10);
-  t.insert(1,2,3,4);
-  auto [y,id]=t.query(2); // y=3, id=1
-  ```
+对象禁止普通复制，使用 `move` 转移根。`clear()` 清空所有节点并重置编号，只在所有树和版本均不再使用时调用。函数值采用 `long double` 浮点计算；大值域的整数下标与函数求值精度分别处理，不提供原整数版的交叉相乘精确比较保证。
+
+====& 核心插入
+
+#code-info(
+  [`add(p,v)` 将在整个节点区间有效的函数加入该节点，中点更优者留下，另一条按端点比较决定递归方向。依赖基础结构中的 `better`，计算值相同取较小编号，`id=0` 为无候选线。],
+  [令 $U=R-L+1$，单次核心插入为 $O(log(U+1))$。],
+)
+#code-file("code/newsgt/lichao/add.cpp")
+
+====& 直线与线段插入
+
+#code-info(
+  [`insert(v)` 在整个值域插入直线；`insert(v,l,r)` 限定整数横坐标范围，要求 `v` 非竖直。`insert(xa,ya,xb,yb)` 插入线段，横坐标为整数，竖直线段取较高端点并只作用于该横坐标。插入均返回共享池内递增的正编号；有效范围与对象值域取交集。依赖基础结构和核心插入片段。],
+  [整域直线插入为 $O(log(U+1))$，限制范围的插入为 $O(log^2(U+1))$。],
+)
+#code-file("code/newsgt/lichao/insert.cpp")
+
+#block(width: 100%, breakable: false)[
+====& 合并
+
+#code-info(
+  [`a.merge(b)` 要求对象不同且值域相同。将两树原地合并到 `a`，随后 `b.root=0`，`b` 可重新插入。保留原线段编号和有效范围，不重新编号；节点暂不回收。将源节点的候选线插入同一区间，再递归合并左右孩子。依赖基础结构和核心插入片段。],
+  [源树有 $S$ 个节点时，最坏 $O(S log(U+1))$ 时间，新增节点为 $O(S)$；任一根为空时为 $O(1)$。],
+)
+#code-file("code/newsgt/lichao/merge.cpp")
+]
+
+====& 持久化核心插入
+
+#code-info(
+  [`jadd(p,v)` 返回插入后的新根，旧节点保持不变。`v` 须已有正编号，本函数不重新编号；在整个节点区间内有效。`p=0` 时采用对象值域。递归内部传入区间，使空子树能直接建点；已有节点通过 `clone` 复制后再修改。只依赖基础结构。],
+  [时间与新增节点数均为 $O(log(U+1))$。],
+)
+#code-file("code/newsgt/lichao/jadd.cpp")
+
+====& 持久化直线与线段插入
+
+#code-info(
+  [`auto b=a.jinsert(v)` 派生插入整域直线的新版本；`jinsert(v,l,r)` 限定有效范围；`jinsert(xa,ya,xb,yb)` 插入线段，竖直线段取较高端点。原对象和旧节点不变，新线只分配一个全局编号。无有效交集时返回内容相同的版本。依赖基础结构和 `jadd`，不依赖普通插入模块。],
+  [整域插入时间与新增节点数均为 $O(log(U+1))$，限制范围时均为 $O(log^2(U+1))$。],
+)
+#code-file("code/newsgt/lichao/jinsert.cpp")
+
+派生版本后，相关对象仅通过 `jinsert` 继续修改，查询共用 `query`；普通 `insert`、`add` 和原地 `merge` 会修改共享节点。
+
+#block(width: 100%, breakable: false)[
+====& 查询
+
+#code-info(
+  [`query(x)` 返回 `{最大纵坐标,编号}`；计算值相同取最小编号，无有效函数或越界时返回 `{-finf,0}`。沿根到叶子的路径比较候选线，不分配节点，只依赖基础结构。],
+  [单次查询为 $O(log(U+1))$，额外空间为 $O(1)$。],
+)
+#code-file("code/newsgt/lichao/query.cpp")
+
+普通版本加入 `add`、`insert`、`merge`、`query` 后，在结构体外使用：
+#code-file("code/newsgt/lichao/example.cpp")
+]
+
+#block(width: 100%, breakable: false)[
+====& 持久化使用示例
+
+将 `jadd`、`jinsert`、`query` 放入基础结构，使用：
+#code-file("code/newsgt/lichao/jexample.cpp")
+此时 `a` 为空，`b.query(3).first=7`，`c.query(3).first=20`，`d.query(5).first=30`。`c` 和 `d` 分别从 `b` 派生。
 ]

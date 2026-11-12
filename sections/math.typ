@@ -225,6 +225,52 @@
 #ps[
   类似于二项式反演, 斯特林反演同样可以多维叠加, 且叠加的方式是一样的, 注意实现也是逐维度地去变换, 不要大力枚举.
 ]
+
+==== 单位根反演
+
+#h(2em) 令 $m>=1$, $omega$ 为 $m$ 次本原单位根, 即 $omega^m=1$, 且对于 $1<=t<m$ 有 $omega^t!=1$. 借助单位根的幂相加, 可以筛选出下标模 $m$ 属于同一余数的项.
+
+#theorem[正交关系][
+  对于整数 $t$ 有
+  $ frac(1,m)sum_(j=0)^(m-1)omega^(j t)=[m divides t]. $
+]
+
+#h(2em) 当 $m divides t$ 时, 和式中的每一项都是 $1$; 否则由等比求和得到 $(1-omega^(m t))/(1-omega^t)=0$.
+
+#theorem[本体形式][
+  对于长度为 $m$ 的序列 $f,g$, 下标满足 $0<=i<m$, 有
+  $
+  &g_i=sum_(j=0)^(m-1)omega^(i j)f_j, \
+  &f_i=frac(1,m)sum_(j=0)^(m-1)omega^(-i j)g_j.
+  $
+]
+
+#theorem[生成函数形式][
+  令 $F(x)=sum_(k=0)^n f_k x^k$, 则对于 $0<=r<m$ 有
+  $
+  sum_(0<=k<=n, m divides (k-r)) f_k
+    =frac(1,m)sum_(j=0)^(m-1)omega^(-r j)F(omega^j).
+  $
+]
+
+#h(2em) 将 $F(omega^j)$ 展开后, 每个 $f_k$ 的权重恰为 $[m divides (k-r)]$. 也可先按下标模 $m$ 分组, 再套用本体形式.
+
+#corollary[二项式系数筛选][
+  对于 $n>=0$, $0<=r<m$ 有
+  $
+  sum_(0<=k<=n, m divides (k-r)) binom(n,k)
+    =frac(1,m)sum_(j=0)^(m-1)omega^(-r j)(1+omega^j)^n.
+  $
+]
+
+#ps[
+  取 $F(x)=(1+x)^n$ 即得上述推论, 已知单位根后可用 $m$ 次快速幂计算. 模素数 $p$ 下计算时, 要求 $m divides (p-1)$, 取模 $p$ 的本原根 $g$, 令 $omega=g^((p-1)/m)$, 并将除以 $m$ 改为乘模 $p$ 的逆元 $m^(-1)$. 约定 $0^0=1$.
+]
+
+#text(size: 6pt)[
+  参考 #link("https://math.mit.edu/research/highschool/primes/materials/2017/Dokmeci.pdf")[Roots of unity filter].
+]
+
 ==== min-max反演
 
 #theorem[本体形式][

@@ -405,6 +405,51 @@
 
 #h(2em) `pb_ds::tree` 的比较器是第 $3$ 个模板参数, 要求类类型, 不能直接用函数指针; 普通函数可先包成 lambda. 本模板 `ordered_set<T>` 固定使用 `less<T>` , 自定义时需修改别名或直接声明 `tree` 并传入比较器对象.
 
+== 常用算法
+
+#h(2em) 以下均为 `<algorithm>` 中的非成员函数, 直接按函数名调用. `[l,r)` 为处理区间, 本节 $n$ 为区间长度; 下例分别独立使用.
+
+=== nth_element
+
+#api-table(
+  [`nth_element`], [`l,nth,r`], [`void`], [使 `nth` 位置的值与完整升序排序后相同. ], [平均 $O(n)$],
+  [`nth_element`], [`l,nth,r,` #linebreak() `cmp`], [`void`], [按 `cmp` 决定目标位置, 如 `greater<int>()` 求第 $k$ 大. ], [平均 $O(n)$],
+)
+
+#h(2em) 要求随机访问迭代器, 可用于 `vector/string/array/deque`. 第 $k$ 项从 $1$ 计数, 要求 $1<=k<=n$, 目标迭代器为 `l+k-1`. 调用会重排原区间; 默认升序时目标左侧不大于它, 右侧不小于它, 两侧内部不保证有序. 重复值按出现次数参与排名.
+
+#code-file("code/stl/nth-element.cpp")
+
+#h(2em) 核心思路是按枢轴划分后只继续处理目标排名所在的一侧. 普通版本保证平均线性时间, 标准不保证最坏 $O(n)$ .
+
+#block(width: 100%, breakable: false)[
+=== unique
+
+#api-table(
+  [`unique`], [`l,r`], [新尾后 `it`], [每组连续相等元素仅保留首项, 默认用 `==` 判等. ], [$O(n)$],
+  [`unique`], [`l,r,pred`], [新尾后 `it`], [`pred(a,b)` 为真表示两项相等; 要求等价关系. ], [$O(n)$],
+)
+
+#h(2em) `unique` 只把有效元素移到区间前段, *不会缩短容器*. 返回的新尾后位置之后的内容不再使用; 对 `vector/string/deque`, 配合 `erase(it,end())` 真正删除尾部. 仅处理相邻重复, 整体去重的常见写法是先 `sort`, 再 `unique` 和 `erase`, 总时间 $O(n log n)$ . `pred` 是判等函数, 不应传入排序用的 `<` 比较器.
+
+#code-file("code/stl/unique.cpp")
+]
+
+=== lower_bound 与 upper_bound
+
+#api-table(
+  [`lower_bound`], [`l,r,x`], [`it` 或 `r`], [升序区间中首个 $>=x$ 的位置. ], [随机访问 $O(log n)$],
+  [`upper_bound`], [`l,r,x`], [`it` 或 `r`], [升序区间中首个 $>x$ 的位置. ], [随机访问 $O(log n)$],
+)
+
+#h(2em) 以下用法要求区间按同一比较规则有序. 查不到满足条件的位置时返回 `r`, 不可解引用. 两函数都返回迭代器, 在 `vector` 等随机访问容器中减去 `begin()` 才是 $0$ 基下标; 两者之差为 $x$ 的出现次数. 判断 $x$ 是否存在, 还须检查 `it!=r && *it==x` .
+
+#code-file("code/stl/binary-search.cpp")
+
+#h(2em) 第四参可传 `cmp`: `lower_bound` 找首个 `!cmp(*it,x)`, `upper_bound` 找首个 `cmp(x,*it)`. 对按 `greater<int>()` 降序排列的区间, 分别找首个 $<=x$ 和 $<x$ 的位置.
+
+#h(2em) 二分的比较次数为 $O(log n)$ . 随机访问迭代器上的总时间为 $O(log n)$; 向前或双向迭代器的移动可达 $O(n)$. 对 `set/map` 等有序树, 使用 `c.lower_bound(x)`、`c.upper_bound(x)` 成员函数以获得 $O(log n)$ 查询.
+
 == GNU pb_ds
 
 #note-box[
@@ -447,8 +492,10 @@
 
 #h(2em) 第 $k$ 小可用 `t.find_by_order(k)` , 返回迭代器, 越界须检查 `t.end()` .
 
+#block(width: 100%, breakable: false)[
 === 哈希映射
 
 #h(2em) `hash_table<int,int> h; h[x]++;` 用法接近 `unordered_map`, 但不维护顺序; `h.find(x)` 返回迭代器, 使用前检查 `h.end()` . 默认实现没有 `reserve()` . `gp_hash_table` 的迭代器仅支持向前 `++` , 不支持 `--` 或 `rbegin/rend` ; 遍历时间还取决于表容量. 哈希碰撞会影响耗时, 需要最坏 $O(log n)$ 时改用 `map` .
+]
 
 #set par(leading: 0.16em, spacing: 1.2pt)

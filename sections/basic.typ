@@ -17,8 +17,8 @@
 == 对拍脚本
 
 #code-info(
-  [依次编译标准程序、待测程序和数据生成器, 循环对拍至输出不同; 编译或运行失败时停止. `diff` 忽略空白数量与空行差异. ],
-  [时间正比于编译及已执行轮次的总耗时, 若始终无差异则不终止; 自身额外空间 $O(1)$ , 磁盘空间为一轮输入、输出与可执行文件总大小. ],
+  [编译标准程序、待测程序和 C++ 生成器; Python 生成器直接用 `python3` 运行. 循环对拍至输出不同, 编译或运行失败时停止. `diff` 忽略空白数量与空行差异. ],
+  [时间正比于编译及已执行轮次的总耗时, 若始终无差异则不终止; 自身额外空间 $O(1)$ , 磁盘空间为程序文件及一轮输入、输出的总大小. ],
 )
 
 #code-file("code/basic/check.sh", lang: "bash")
@@ -27,9 +27,10 @@
 
 ```bash
 check ac.cpp wa.cpp gen.cpp [FILE]
+check ac.cpp wa.cpp gen.py [FILE]
 ```
 
-前三参依次为标准程序、待测程序和数据生成器的源文件, *文件名都必须带 `.cpp` 后缀, 不能省略*. 第四参为当前目录下的工作目录名, 可省略, 默认为 `FILE`; 目录内生成 `ac`、`wa`、`gen`, 并保留最后一轮的 `data.in`、`ac.out` 和 `wa.out`. 可用 `Ctrl+C` 手动停止.
+前三参依次为标准程序、待测程序和数据生成器的源文件. *前两参必须带 `.cpp` 后缀, 第三参必须带 `.cpp` 或 `.py` 后缀, 均不能省略*. 脚本按生成器后缀选择编译或使用 `python3`, Python 生成器需要比赛机器已安装 Python 3. 第四参为当前目录下的工作目录名, 可省略, 默认为 `FILE`; 目录内生成 `ac`、`wa`、`gen`（Python 时为复制的脚本）, 并保留最后一轮的 `data.in`、`ac.out` 和 `wa.out`. 可用 `Ctrl+C` 手动停止.
 
 *比赛机器首次配置:* 将上述脚本写入 `~/check.sh`, 执行 `chmod +x ~/check.sh` 赋予执行权限, 然后在 `~/.bashrc` 末尾加入:
 
@@ -39,11 +40,13 @@ alias check='~/check.sh'
 
 保存后执行 `source ~/.bashrc` 重新加载 Bash 配置, 当前终端即可使用 `check`.
 
+#block(width: 100%, breakable: false)[
 == ASan 调试脚本
 
 启用 AddressSanitizer、UndefinedBehaviorSanitizer、常用编译警告和调试信息, 在当前目录生成 `a.out`.
 
 #code-file("code/basic/asan.sh", lang: "bash")
+]
 
 *使用格式:*
 

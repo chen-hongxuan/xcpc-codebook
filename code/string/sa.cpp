@@ -5,10 +5,11 @@ namespace sa{
       sa[i]=i,rk[0][i]=s[i]-'a'+1;
     }
     VI newrk(s.size());
+    const int zero=0; // 补零项也须有有效引用。
     for(int w=1;w<s.size();w<<=1){
       auto f=[&](int u){
-        int fx=u+w<s.size()?rk.back()[u+w]:0;
-        return array<int,2>{rk.back()[u],fx};
+        const int &fx=u+w<s.size()?rk.back()[u+w]:zero;
+        return tie(rk.back()[u],fx);
       };
       sort(sa.begin(),sa.end(),[&](int x,int y){
         return f(x)<f(y);

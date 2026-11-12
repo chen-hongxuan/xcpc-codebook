@@ -7,7 +7,7 @@ struct point{
 };
 vector<point> ConstructConvex(vector<point> p){
 	sort(p.begin(),p.end(),[](const point a,const point b){
-		return mpr(a.x,a.y)<mpr(b.x,b.y);
+		return tie(a.x,a.y)<tie(b.x,b.y);
 	});
 	vector<int> sta,vis;
 	sta.resize(p.size()+3);
