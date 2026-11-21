@@ -73,6 +73,48 @@ python3 scripts/build.py --watch
 编译出错时监听仍会继续，修正源文件并保存即可重试。终端中可用 `Ctrl+C` 停止；
 VS Code 中可通过终止任务停止。也可以直接打开 `dist/xcpc-codebook.pdf` 查看输出。
 
+## VS Code 代码片段
+
+使用 `Horyce.custom-snippet-manager`（Custom Snippet Manager）插件。
+在 Linux 本机安装或更新全部片段：
+
+```sh
+python3 scripts/export_snippets.py --install
+```
+
+脚本按目录分类导入 `code/` 中的源码、正文内的代码样例和带 `codebook:`
+标记的分段。旧版线段树（`code/sgt/` 及线段树的 `origin/` 备份）不导入插件；
+成员函数仍是独立片段，可插入公共结构的预留位置。
+公共片段以“数据结构名 · 公共结构”命名，例如“凸包 · 公共结构”，
+线段树和主席树采用当前框架。
+片段缩进统一为 4 个空格，原始源码的排版保留；字符串内容保持原样。
+`$`、反斜杠等字符会按片段格式转义，插入后还原成原代码。
+
+安装后在 VS Code 运行一次 `Developer: Reload Window`，在 `.cpp` 文件中按
+`Ctrl+Alt+I`，输入中文算法名、文件名或 `xcpc-` 搜索并插入。
+`.sh` 和 `.py` 片段分别在 Shell 和 Python 文件中显示。
+安装脚本设置 `"editor.snippetSuggestions": "none"`，输入代码时隐藏所有片段类
+自动补全（包括内置片段），普通变量、函数补全照常显示；通过 `Ctrl+Alt+I`
+打开的独立片段选择菜单仍可正常使用。
+调用前仍须自行插入基础模板及相应的公共结构，脚本不会自动合并依赖。
+
+安装脚本同时设置 C++、Shell 和 Python 编辑器使用 4 空格、关闭自动检测缩进，
+以免片段插入到已有文件时被改成其他缩进。插件数据及原设置会先备份到
+VS Code 用户数据目录中的 `globalStorage/xcpc-snippet-backups/`。
+重复运行只更新本项目管理的片段，保留个人片段、使用次数和创建时间。
+
+仅生成可携带的导入文件（不修改 VS Code）：
+
+```sh
+python3 scripts/export_snippets.py
+```
+
+输出位于 `dist/snippets/import/`，每个分类一份 JSON，可在插件的片段库页面导入。
+`dist/snippets/manifest.json` 记录全部来源。
+脚本需要 Python 3 和 `clang-format`，会自动寻找 VS Code C/C++ 扩展自带的
+`clang-format`；也可用 `--clang-format /path/to/clang-format` 指定。
+用户数据目录默认为 `~/.config/Code/User`，可用 `--user-dir` 指定其他位置。
+
 ## GitHub 自动构建
 
 每次 push 和 pull request 都会运行 `.github/workflows/build.yml`，PDF 可在对应的
